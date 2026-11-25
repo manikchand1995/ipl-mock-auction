@@ -374,3 +374,35 @@ test('RoomManager.joinRoom rejects SINGLE_PLAYER rooms and allows MULTIPLAYER ro
   sp.engine.destroy();
   mp.engine.destroy();
 });
+
+test('gradeTeamSquad assigns distinct Captain and Vice-Captain and setLeadership updates them', () => {
+  const pool = playersData as Player[];
+  const indianPool = pool.filter((p) => !p.isOverseas);
+  const squad = indianPool.slice(0, 15).map((p) => ({
+    player: p,
+    priceLakhs: 100,
+    acquiredVia: 'AUCTION' as const,
+  }));
+  const engine = new AuctionEngine(
+    'LEAD01',
+    'host-tok',
+    DEFAULT_ROOM_CONFIG,
+    { onStateChange: () => {}, onReaction: () => {} }
+  );
+  engine.assignHumanToTeam('csk', 'host-tok', 'Host');
+  engine.teams['csk'].squad = squad;
+  engine.completeAuction();
+
+  const initialGrade = engine.grades?.['csk'];
+  assert.ok(initialGrade?.captainId);
+  assert.ok(initialGrade?.viceCaptainId);
+  assert.notEqual(initialGrade?.captainId, initialGrade?.viceCaptainId);
+
+  const customCap = squad[4].player.id;
+  const customVc = squad[5].player.id;
+  const err = engine.setLeadership('csk', customCap, customVc);
+  assert.equal(err, null);
+  assert.equal(engine.teams['csk'].captainId, customCap);
+  assert.equal(engine.teams['csk'].viceCaptainId, customVc);
+  engine.destroy();
+});

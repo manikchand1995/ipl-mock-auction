@@ -56,6 +56,27 @@ function ImpactArrow({
   return null;
 }
 
+function LeaderBadge({
+  playerId,
+  team,
+}: {
+  playerId: string;
+  team?: TeamState;
+}) {
+  if (!team) return null;
+  if (team.captainId === playerId) {
+    return (
+      <span className="ml-1 text-[10px] font-black text-amber-300">(C)</span>
+    );
+  }
+  if (team.viceCaptainId === playerId) {
+    return (
+      <span className="ml-1 text-[10px] font-black text-sky-300">(VC)</span>
+    );
+  }
+  return null;
+}
+
 function InningsTable({
   innings,
   teams,
@@ -66,6 +87,7 @@ function InningsTable({
   onSelectPlayer?: (playerId: string) => void;
 }) {
   const batTeam = teams[innings.battingTeamId];
+  const bowlTeam = teams[innings.bowlingTeamId];
   return (
     <div className="space-y-3 rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
       <div className="flex items-center justify-between border-b border-slate-800 pb-2">
@@ -102,6 +124,7 @@ function InningsTable({
                   >
                     {b.name}
                   </button>
+                  <LeaderBadge playerId={b.playerId} team={batTeam} />
                   <ImpactArrow playerId={b.playerId} sub={innings.battingImpactSub} />
                 </td>
                 <td className="py-1.5 pr-2 text-[11px] text-slate-400">
@@ -144,6 +167,7 @@ function InningsTable({
                 >
                   {p.name}
                 </button>
+                <LeaderBadge playerId={p.playerId} team={batTeam} />
                 <ImpactArrow playerId={p.playerId} sub={innings.battingImpactSub} />
                 {idx < innings.yetToBat!.length - 1 ? ', ' : ''}
               </span>
@@ -195,6 +219,7 @@ function InningsTable({
                   >
                     {bw.name}
                   </button>
+                  <LeaderBadge playerId={bw.playerId} team={bowlTeam} />
                   <ImpactArrow playerId={bw.playerId} sub={innings.bowlingImpactSub} />
                 </td>
                 <td className="px-2 py-1.5 text-right font-mono text-slate-300">

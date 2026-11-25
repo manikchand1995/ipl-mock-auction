@@ -259,6 +259,28 @@ io.on('connection', (socket) => {
     engine.simulateSeason();
   });
 
+  socket.on(
+    'setLeadership',
+    (
+      payload: { captainId?: string | null; viceCaptainId?: string | null },
+      ack?: (res: { ok: boolean; error?: string }) => void
+    ) => {
+      const session = roomManager.getSessionBySocket(socket.id);
+      if (!session) return ack?.({ ok: false, error: 'No active session' });
+      const engine = roomManager.getRoom(session.roomCode);
+      if (!engine) return ack?.({ ok: false, error: 'Room not found' });
+      const team = engine.getTeamByToken(session.playerToken);
+      if (!team) return ack?.({ ok: false, error: 'No team assigned' });
+
+      const err = engine.setLeadership(
+        team.franchise.id,
+        payload?.captainId,
+        payload?.viceCaptainId
+      );
+      ack?.(err ? { ok: false, error: err } : { ok: true });
+    }
+  );
+
   socket.on('sendChat', (payload: { text: string }) => {
     const session = roomManager.getSessionBySocket(socket.id);
     if (!session) return;

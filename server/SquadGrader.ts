@@ -294,6 +294,27 @@ export function gradeTeamSquad(team: TeamState): TeamGrade {
   const mostExpensiveBuy =
     [...team.squad].sort((a, b) => b.priceLakhs - a.priceLakhs)[0] ?? null;
 
+  const leadershipPool = playingXI.length >= 2 ? playingXI : team.squad;
+  const rankedLeaders = [...leadershipPool].sort((a, b) => {
+    const score = (p: AcquiredPlayer) =>
+      p.player.ratings.overall +
+      (!p.player.isUncapped ? 4 : -6) +
+      (!p.player.isOverseas ? 2 : 0) +
+      (p.player.role === 'WK' || p.player.role === 'AR' ? 1.5 : 0);
+    return score(b) - score(a);
+  });
+  const squadIdSet = new Set(team.squad.map((s) => s.player.id));
+  const captainId =
+    team.captainId && squadIdSet.has(team.captainId)
+      ? team.captainId
+      : rankedLeaders[0]?.player.id ?? null;
+  const viceCaptainId =
+    team.viceCaptainId &&
+    squadIdSet.has(team.viceCaptainId) &&
+    team.viceCaptainId !== captainId
+      ? team.viceCaptainId
+      : rankedLeaders.find((p) => p.player.id !== captainId)?.player.id ?? null;
+
   return {
     teamId: team.franchise.id,
     overallScore,
@@ -304,6 +325,8 @@ export function gradeTeamSquad(team: TeamState): TeamGrade {
     homeAdvantageScore,
     playingXI,
     impactPlayer,
+    captainId,
+    viceCaptainId,
     strengths,
     weaknesses,
     bestValueBuy,

@@ -11,6 +11,10 @@ interface PostAuctionViewProps {
   state: PublicRoomState;
   playerToken: string;
   onSimulateSeason: () => void;
+  onSetLeadership?: (
+    captainId: string | null,
+    viceCaptainId: string | null
+  ) => void;
   onPlayAgain: () => void;
 }
 
@@ -18,6 +22,7 @@ export default function PostAuctionView({
   state,
   playerToken,
   onSimulateSeason,
+  onSetLeadership,
   onPlayAgain,
 }: PostAuctionViewProps) {
   const myTeam = Object.values(state.teams).find(
@@ -37,6 +42,29 @@ export default function PostAuctionView({
 
   const activeTeam = state.teams[selectedTeamId];
   const activeGrade = grades[selectedTeamId];
+  const isMyActiveTeam = Boolean(
+    activeTeam && activeTeam.playerToken === playerToken
+  );
+  const captainId = activeTeam?.captainId ?? activeGrade?.captainId ?? null;
+  const viceCaptainId =
+    activeTeam?.viceCaptainId ?? activeGrade?.viceCaptainId ?? null;
+  const captainPlayer = activeTeam?.squad.find(
+    (s) => s.player.id === captainId
+  )?.player;
+  const viceCaptainPlayer = activeTeam?.squad.find(
+    (s) => s.player.id === viceCaptainId
+  )?.player;
+
+  const assignRole = (playerId: string, role: 'C' | 'VC') => {
+    if (!onSetLeadership || !isMyActiveTeam) return;
+    if (role === 'C') {
+      const nextVc = viceCaptainId === playerId ? captainId : viceCaptainId;
+      onSetLeadership(playerId, nextVc ?? null);
+    } else {
+      const nextCap = captainId === playerId ? viceCaptainId : captainId;
+      onSetLeadership(nextCap ?? null, playerId);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-4 md:p-6">
@@ -118,8 +146,37 @@ export default function PostAuctionView({
               </span>
             </div>
 
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-950/60 px-3.5 py-2 text-xs">
+              <div className="flex flex-wrap items-center gap-3">
+                <span>
+                  <span className="rounded bg-amber-400 px-1.5 py-0.5 text-[10px] font-black text-slate-950">
+                    C
+                  </span>{' '}
+                  <strong className="text-white">
+                    {captainPlayer?.name ?? 'Unassigned'}
+                  </strong>
+                </span>
+                <span>
+                  <span className="rounded bg-sky-400 px-1.5 py-0.5 text-[10px] font-black text-slate-950">
+                    VC
+                  </span>{' '}
+                  <strong className="text-white">
+                    {viceCaptainPlayer?.name ?? 'Unassigned'}
+                  </strong>
+                </span>
+              </div>
+              {isMyActiveTeam && (
+                <span className="text-[11px] text-slate-400">
+                  Click C / VC on any player below to change
+                </span>
+              )}
+            </div>
+
             <div className="grid gap-2 sm:grid-cols-2">
-              {activeGrade.playingXI.map((item, idx) => (
+              {activeGrade.playingXI.map((item, idx) => {
+                const isC = item.player.id === captainId;
+                const isVC = item.player.id === viceCaptainId;
+                return (
                 <div
                   key={item.player.id}
                   className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/60 px-3.5 py-2.5 text-xs"
@@ -129,16 +186,28 @@ export default function PostAuctionView({
                       {idx + 1}.
                     </span>
                     <div>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedPlayerId(item.player.id)}
-                        className="text-left font-semibold text-white transition hover:text-amber-300 hover:underline"
-                      >
-                        {item.player.name}{' '}
-                        {item.player.isOverseas && (
-                          <span className="text-sky-400">✈️</span>
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedPlayerId(item.player.id)}
+                          className="text-left font-semibold text-white transition hover:text-amber-300 hover:underline"
+                        >
+                          {item.player.name}{' '}
+                          {item.player.isOverseas && (
+                            <span className="text-sky-400">✈️</span>
+                          )}
+                        </button>
+                        {isC && (
+                          <span className="rounded bg-amber-400 px-1.5 py-0.5 text-[10px] font-black text-slate-950">
+                            C
+                          </span>
                         )}
-                      </button>
+                        {isVC && (
+                          <span className="rounded bg-sky-400 px-1.5 py-0.5 text-[10px] font-black text-slate-950">
+                            VC
+                          </span>
+                        )}
+                      </div>
                       <div className="text-[11px] text-slate-400">
                         {item.player.playingRole
                           ? PLAYING_ROLE_LABELS[item.player.playingRole]
@@ -147,11 +216,42 @@ export default function PostAuctionView({
                       </div>
                     </div>
                   </div>
-                  <span className="font-mono text-amber-300">
-                    {formatINR(item.priceLakhs)}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    {isMyActiveTeam && (
+                      <div className="flex gap-1">
+                        <button
+                          type="button"
+                          onClick={() => assignRole(item.player.id, 'C')}
+                          className={`rounded px-1.5 py-0.5 text-[10px] font-bold transition ${
+                            isC
+                              ? 'bg-amber-400 text-slate-950'
+                              : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                          }`}
+                          title="Set as Captain"
+                        >
+                          C
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => assignRole(item.player.id, 'VC')}
+                          className={`rounded px-1.5 py-0.5 text-[10px] font-bold transition ${
+                            isVC
+                              ? 'bg-sky-400 text-slate-950'
+                              : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                          }`}
+                          title="Set as Vice-Captain"
+                        >
+                          VC
+                        </button>
+                      </div>
+                    )}
+                    <span className="font-mono text-amber-300">
+                      {formatINR(item.priceLakhs)}
+                    </span>
+                  </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             {activeGrade.impactPlayer && (

@@ -104,6 +104,8 @@ export interface TeamState {
   remainingPurseLakhs: number;
   rtmCardsRemaining: number;
   squad: AcquiredPlayer[];
+  captainId?: string | null;
+  viceCaptainId?: string | null;
 }
 
 export interface RoomConfig {
@@ -174,6 +176,8 @@ export interface TeamGrade {
   homeAdvantageScore: number;
   playingXI: AcquiredPlayer[];
   impactPlayer: AcquiredPlayer | null;
+  captainId?: string | null;
+  viceCaptainId?: string | null;
   strengths: string[];
   weaknesses: string[];
   bestValueBuy: AcquiredPlayer | null;

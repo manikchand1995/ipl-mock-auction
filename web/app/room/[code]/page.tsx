@@ -278,6 +278,9 @@ export default function RoomPage() {
           state={state}
           playerToken={playerToken}
           onSimulateSeason={() => socket.emit('simulateSeason')}
+          onSetLeadership={(captainId, viceCaptainId) =>
+            socket.emit('setLeadership', { captainId, viceCaptainId })
+          }
           onPlayAgain={handleExitRoom}
         />
       )}

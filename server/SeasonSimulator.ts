@@ -623,6 +623,15 @@ function simulateMatch(
   const batFirstDynamic = computeXIRatings(batFirstXI, pitch, formMap);
   const chaseDynamic = computeXIRatings(chaseXIForBat, pitch, formMap);
 
+  const getLeadershipBonus = (team: TeamState, xi: AcquiredPlayer[]) => {
+    const cap = xi.find((p) => p.player.id === team.captainId);
+    const vc = xi.find((p) => p.player.id === team.viceCaptainId);
+    const activeLeader = cap ?? vc;
+    return activeLeader ? (activeLeader.player.ratings.overall - 82) * 0.12 : 0;
+  };
+  const batFirstLeadBoost = getLeadershipBonus(batFirstTeam, batFirstXI);
+  const chaseLeadBoost = getLeadershipBonus(chaseTeam, chaseXIForBat);
+
   const par = homeTeam.franchise.homeGround.parScore;
   const batFirstHomeBoost = homeBatsFirst
     ? (batFirstDynamic.pitchFit - 70) * 0.18
@@ -635,11 +644,13 @@ function simulateMatch(
     par +
     (batFirstDynamic.bat - chaseDynamic.bowl) * 0.45 +
     batFirstHomeBoost +
+    batFirstLeadBoost +
     (Math.random() * 34 - 17);
   const chaseExpected =
     par +
     (chaseDynamic.bat - batFirstDynamic.bowl) * 0.45 +
     chaseHomeBoost +
+    chaseLeadBoost +
     (Math.random() * 34 - 17);
 
   let batFirstRuns = Math.round(clamp(batFirstExpected, 115, 255));

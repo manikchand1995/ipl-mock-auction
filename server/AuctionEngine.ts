@@ -808,11 +808,44 @@ export class AuctionEngine {
 
     const grades: Record<string, TeamGrade> = {};
     for (const [teamId, team] of Object.entries(this.teams)) {
-      grades[teamId] = gradeTeamSquad(team);
+      const g = gradeTeamSquad(team);
+      grades[teamId] = g;
+      team.captainId = g.captainId ?? null;
+      team.viceCaptainId = g.viceCaptainId ?? null;
     }
     this.grades = grades;
     this.addSystemMessage('Auction COMPLETED! Check out the squad grades & Playing XIs.');
     this.emitState();
+  }
+
+  public setLeadership(
+    teamId: string,
+    captainId?: string | null,
+    viceCaptainId?: string | null
+  ): string | null {
+    if (this.phase !== 'COMPLETED') return 'Leadership can only be edited post-auction';
+    const team = this.teams[teamId];
+    if (!team) return 'Invalid team';
+
+    const nextCap = captainId !== undefined ? captainId : team.captainId ?? null;
+    const nextVc = viceCaptainId !== undefined ? viceCaptainId : team.viceCaptainId ?? null;
+    if (nextCap && !team.squad.some((s) => s.player.id === nextCap)) {
+      return 'Captain must be in squad';
+    }
+    if (nextVc && !team.squad.some((s) => s.player.id === nextVc)) {
+      return 'Vice-Captain must be in squad';
+    }
+    if (nextCap && nextVc && nextCap === nextVc) {
+      return 'Captain and Vice-Captain must be different players';
+    }
+
+    team.captainId = nextCap;
+    team.viceCaptainId = nextVc;
+    if (this.grades) {
+      this.grades[teamId] = gradeTeamSquad(team);
+    }
+    this.emitState();
+    return null;
   }
 
   public simulateSeason(): void {
