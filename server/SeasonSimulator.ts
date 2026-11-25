@@ -1,0 +1,856 @@
+import { sortPlayingXIByOrder } from '../shared/rules';
+import {
+  AcquiredPlayer,
+  BatterInnings,
+  BowlerFigures,
+  InningsScorecard,
+  PitchType,
+  PlayerSeasonStats,
+  SeasonSimulationResult,
+  SimulatedMatchResult,
+  StandingsRow,
+  TeamGrade,
+  TeamSeasonStats,
+  TeamState,
+} from '../shared/types';
+
+/**
+ * Selects a dynamic Match XI from the team's full squad based on:
+ * 1) Recent player form (benching out-of-form players when bench depth exists)
+ * 2) Venue pitch type (extra spinners on SPIN_FRIENDLY, extra pacers on PACE_BOUNCE)
+ * 3) Opponent batting strength
+ * Returns the 11 sorted in authentic cricket batting order.
+ */
+function selectDynamicMatchXI(
+  team: TeamState,
+  pitch: PitchType,
+  opponentBattingScore: number,
+  formMap: Record<string, number>
+): AcquiredPlayer[] {
+  const scored = team.squad
+    .map((item) => {
+      const p = item.player;
+      let score = p.ratings.overall;
+      const form = formMap[p.id] ?? 0;
+      score += clamp(form, -14, 10);
+
+      // Pitch adaptation
+      if (pitch === 'SPIN_FRIENDLY') {
+        if (p.playingRole === 'SPIN_BOWL' || p.playingRole === 'SPIN_AR') {
+          score += 10;
+        }
+      } else if (pitch === 'PACE_BOUNCE') {
+        if (p.playingRole === 'PACE_BOWL' || p.playingRole === 'PACE_AR') {
+          score += 10;
+        }
+      } else if (pitch === 'BATTING_PARADISE') {
+        if (p.playingRole === 'OPENER' || p.playingRole === 'FINISHER') {
+          score += 6;
+        }
+      }
+
+      // Opponent adaptation: against strong batting (84+), value high-rated bowlers
+      if (opponentBattingScore >= 84 && (p.role === 'BOWL' || p.role === 'AR')) {
+        score += 4;
+      }
+
+      return { item, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .map((x) => x.item);
+
+  const xi: AcquiredPlayer[] = [];
+  let overseas = 0;
+
+  const canAdd = (item: AcquiredPlayer) =>
+    xi.length < 11 &&
+    !xi.some((x) => x.player.id === item.player.id) &&
+    (!item.player.isOverseas || overseas < 4);
+
+  const add = (item: AcquiredPlayer | undefined) => {
+    if (!item || !canAdd(item)) return;
+    xi.push(item);
+    if (item.player.isOverseas) overseas++;
+  };
+
+  // 1 WK, 2 Openers, at least 2 Pacers, 2 Spinners (3 on spin-friendly), 2 ARs, 5+ bowling options
+  const targetSpinners = pitch === 'SPIN_FRIENDLY' ? 3 : 2;
+  add(scored.find((x) => x.player.role === 'WK' && canAdd(x)));
+  for (const x of scored) {
+    if (xi.filter((p) => p.player.playingRole === 'OPENER').length >= 2) break;
+    if (x.player.playingRole === 'OPENER') add(x);
+  }
+  for (const x of scored) {
+    if (
+      xi.filter(
+        (p) => p.player.playingRole === 'PACE_BOWL' || p.player.playingRole === 'PACE_AR'
+      ).length >= 2
+    ) {
+      break;
+    }
+    if (x.player.playingRole === 'PACE_BOWL' || x.player.playingRole === 'PACE_AR') {
+      add(x);
+    }
+  }
+  for (const x of scored) {
+    if (
+      xi.filter(
+        (p) => p.player.playingRole === 'SPIN_BOWL' || p.player.playingRole === 'SPIN_AR'
+      ).length >= targetSpinners
+    ) {
+      break;
+    }
+    if (x.player.playingRole === 'SPIN_BOWL' || x.player.playingRole === 'SPIN_AR') {
+      add(x);
+    }
+  }
+  for (const x of scored) {
+    if (xi.filter((p) => p.player.role === 'AR').length >= 2) break;
+    if (x.player.role === 'AR') add(x);
+  }
+  for (const x of scored) {
+    if (
+      xi.filter((p) => p.player.role === 'BOWL' || p.player.role === 'AR')
+        .length >= 5
+    ) {
+      break;
+    }
+    if (x.player.role === 'BOWL' || x.player.role === 'AR') add(x);
+  }
+  for (const x of scored) {
+    if (xi.length >= 11) break;
+    add(x);
+  }
+
+  return sortPlayingXIByOrder(xi);
+}
+
+function updateFormAfterInnings(
+  inn: InningsScorecard,
+  formMap: Record<string, number>
+): void {
+  for (const b of inn.batters) {
+    const prev = formMap[b.playerId] ?? 0;
+    if (b.runs >= 45) formMap[b.playerId] = clamp(prev + 5, -15, 12);
+    else if (b.runs >= 25) formMap[b.playerId] = clamp(prev + 2, -15, 12);
+    else if (b.runs < 10 && b.outText !== 'not out') {
+      formMap[b.playerId] = clamp(prev - 4, -15, 12);
+    }
+  }
+  for (const bw of inn.bowlers) {
+    const prev = formMap[bw.playerId] ?? 0;
+    if (bw.wickets >= 2) formMap[bw.playerId] = clamp(prev + 5, -15, 12);
+    else if (bw.wickets === 0 && bw.economy > 10.0) {
+      formMap[bw.playerId] = clamp(prev - 4, -15, 12);
+    }
+  }
+}
+
+function clamp(n: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, n));
+}
+
+function formatDateLabel(dayOffset: number): string {
+  const base = new Date(2026, 2, 22); // Mar 22
+  base.setDate(base.getDate() + Math.floor(dayOffset / 1.4));
+  return base.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function buildInningsScorecard(
+  battingTeam: TeamState,
+  bowlingTeam: TeamState,
+  battersXI: AcquiredPlayer[],
+  bowlersXI: AcquiredPlayer[],
+  targetTotalRuns: number,
+  targetWickets: number,
+  oversStr: string,
+  totalBalls: number
+): InningsScorecard {
+  const extras = Math.min(12, Math.max(3, Math.round(targetTotalRuns * 0.04)));
+  const runsToDistribute = Math.max(20, targetTotalRuns - extras);
+
+  // Pick 5 bowlers (preferring BOWL and AR from bowlingXI)
+  const specialistBowlers = bowlersXI.filter(
+    (p) => p.player.role === 'BOWL' || p.player.role === 'AR'
+  );
+  const selectedBowlers = (
+    specialistBowlers.length >= 5
+      ? specialistBowlers.slice(0, 5)
+      : [
+          ...specialistBowlers,
+          ...bowlersXI.filter((p) => !specialistBowlers.includes(p)),
+        ].slice(0, 5)
+  ).slice(0, Math.max(1, Math.min(5, bowlersXI.length)));
+
+  // Distribute overs across 5 bowlers (4 overs each for full 20 overs)
+  const oversInt = Math.floor(totalBalls / 6);
+  const remBalls = totalBalls % 6;
+  const bowlerOvers = selectedBowlers.map((_, idx) => {
+    if (oversInt >= 20) return 4;
+    const base = Math.floor(oversInt / selectedBowlers.length);
+    return base + (idx < oversInt % selectedBowlers.length ? 1 : 0);
+  });
+
+  // Distribute wickets among bowlers weighted by bowling rating
+  const bowlerWeights = selectedBowlers.map((b) =>
+    Math.max(20, b.player.ratings.bowling)
+  );
+  const bowlerWickets = new Array(selectedBowlers.length).fill(0);
+  for (let w = 0; w < targetWickets; w++) {
+    const totalW = bowlerWeights.reduce((a, b) => a + b, 0);
+    let r = Math.random() * totalW;
+    let chosen = 0;
+    for (let i = 0; i < bowlerWeights.length; i++) {
+      r -= bowlerWeights[i];
+      if (r <= 0) {
+        chosen = i;
+        break;
+      }
+    }
+    bowlerWickets[chosen]++;
+  }
+
+  // Distribute runs conceded among bowlers
+  const bowlerRuns = new Array(selectedBowlers.length).fill(0);
+  let remainingConceded = targetTotalRuns;
+  for (let i = 0; i < selectedBowlers.length; i++) {
+    if (i === selectedBowlers.length - 1) {
+      bowlerRuns[i] = Math.max(0, remainingConceded);
+    } else {
+      const share =
+        (bowlerOvers[i] / Math.max(1, oversInt)) *
+        (0.8 + Math.random() * 0.4);
+      const r = Math.min(
+        remainingConceded,
+        Math.max(4, Math.round(targetTotalRuns * share))
+      );
+      bowlerRuns[i] = r;
+      remainingConceded -= r;
+    }
+  }
+
+  const bowlerFigures: BowlerFigures[] = selectedBowlers.map((b, idx) => {
+    const ov =
+      idx === selectedBowlers.length - 1 && remBalls > 0
+        ? `${bowlerOvers[idx]}.${remBalls}`
+        : `${bowlerOvers[idx]}.0`;
+    const ovFloat =
+      bowlerOvers[idx] +
+      (idx === selectedBowlers.length - 1 ? remBalls / 6 : 0);
+    const econ = ovFloat > 0 ? Number((bowlerRuns[idx] / ovFloat).toFixed(2)) : 0;
+    return {
+      playerId: b.player.id,
+      name: b.player.name,
+      overs: ov,
+      runs: bowlerRuns[idx],
+      wickets: bowlerWickets[idx],
+      economy: econ,
+    };
+  });
+
+  // Determine how many batters batted (wickets + 2, capped at XI length)
+  const numBatted = Math.min(battersXI.length, targetWickets + 2);
+  const activeBatters = battersXI.slice(0, numBatted);
+
+  // Weight runs by batting rating & position (top 5 get bigger share)
+  const batWeights = activeBatters.map((b, idx) => {
+    const posBoost = idx < 4 ? 1.45 : idx < 7 ? 1.0 : 0.45;
+    return Math.max(10, b.player.ratings.batting * posBoost * (0.6 + Math.random() * 0.9));
+  });
+  const totalBatW = batWeights.reduce((a, b) => a + b, 0);
+
+  const batterRuns = activeBatters.map((_, idx) =>
+    Math.round((batWeights[idx] / Math.max(1, totalBatW)) * runsToDistribute)
+  );
+  // Adjust rounding difference on top scorer
+  const sumRuns = batterRuns.reduce((a, b) => a + b, 0);
+  if (batterRuns.length > 0) {
+    batterRuns[0] = Math.max(0, batterRuns[0] + (runsToDistribute - sumRuns));
+  }
+
+  // Distribute balls across batters proportional to runs
+  const batterBalls = batterRuns.map((r, idx) => {
+    const srTarget = 1.15 + (activeBatters[idx].player.ratings.batting / 100) * 0.45;
+    return Math.max(r > 0 ? 1 : 2, Math.round(r / srTarget + Math.random() * 4));
+  });
+  const sumBalls = batterBalls.reduce((a, b) => a + b, 0);
+  if (batterBalls.length > 0 && sumBalls > totalBalls) {
+    const ratio = totalBalls / sumBalls;
+    for (let i = 0; i < batterBalls.length; i++) {
+      batterBalls[i] = Math.max(1, Math.round(batterBalls[i] * ratio));
+    }
+  }
+
+  // Build wicket taker pool for dismissals
+  const dismissalBowlers: string[] = [];
+  bowlerFigures.forEach((bf) => {
+    for (let k = 0; k < bf.wickets; k++) {
+      dismissalBowlers.push(bf.name.split(' ').slice(-1)[0]);
+    }
+  });
+
+  const batters: BatterInnings[] = activeBatters.map((b, idx) => {
+    const r = batterRuns[idx];
+    const balls = batterBalls[idx];
+    const sixes = Math.min(Math.floor(r / 12), Math.floor((r / 6) * (0.25 + Math.random() * 0.3)));
+    const remForFours = Math.max(0, r - sixes * 6);
+    const fours = Math.min(Math.floor(remForFours / 4), Math.floor((remForFours / 4) * (0.4 + Math.random() * 0.35)));
+    const sr = balls > 0 ? Number(((r / balls) * 100).toFixed(1)) : 0;
+
+    const isOut = idx < targetWickets;
+    let outText = 'not out';
+    if (isOut) {
+      const bName = dismissalBowlers[idx] ?? 'Bowler';
+      const catcher =
+        bowlersXI[Math.floor(Math.random() * bowlersXI.length)]?.player.name
+          .split(' ')
+          .slice(-1)[0] ?? 'sub';
+      outText = Math.random() < 0.28 ? `b ${bName}` : `c ${catcher} b ${bName}`;
+    }
+
+    return {
+      playerId: b.player.id,
+      name: b.player.name,
+      role: b.player.role,
+      runs: r,
+      balls,
+      fours,
+      sixes,
+      strikeRate: sr,
+      outText,
+    };
+  });
+
+  return {
+    battingTeamId: battingTeam.franchise.id,
+    bowlingTeamId: bowlingTeam.franchise.id,
+    totalRuns: targetTotalRuns,
+    wickets: targetWickets,
+    overs: oversStr,
+    extras,
+    batters,
+    bowlers: bowlerFigures,
+  };
+}
+
+function computeXIRatings(
+  xi: AcquiredPlayer[],
+  pitch: PitchType,
+  formMap: Record<string, number>
+): { bat: number; bowl: number; pitchFit: number } {
+  const batters = xi.filter((p) => ['BAT', 'WK', 'AR'].includes(p.player.role));
+  const bowlers = xi.filter((p) => ['BOWL', 'AR'].includes(p.player.role));
+
+  const bat =
+    batters.length > 0
+      ? batters.reduce(
+          (s, p) => s + p.player.ratings.batting + (formMap[p.player.id] ?? 0) * 0.35,
+          0
+        ) / batters.length
+      : 65;
+  const bowl =
+    bowlers.length > 0
+      ? bowlers.reduce(
+          (s, p) => s + p.player.ratings.bowling + (formMap[p.player.id] ?? 0) * 0.35,
+          0
+        ) / bowlers.length
+      : 65;
+
+  const spinners = xi.filter(
+    (p) => p.player.playingRole === 'SPIN_BOWL' || p.player.playingRole === 'SPIN_AR'
+  ).length;
+  const pacers = xi.filter(
+    (p) => p.player.playingRole === 'PACE_BOWL' || p.player.playingRole === 'PACE_AR'
+  ).length;
+
+  let pitchFit = 70;
+  if (pitch === 'SPIN_FRIENDLY') pitchFit += Math.min(24, spinners * 8);
+  else if (pitch === 'PACE_BOUNCE') pitchFit += Math.min(24, pacers * 8);
+  else if (pitch === 'BATTING_PARADISE') pitchFit += bat >= 84 ? 22 : 12;
+  else pitchFit += spinners >= 2 && pacers >= 2 ? 20 : 10;
+
+  return { bat, bowl, pitchFit };
+}
+
+function simulateMatch(
+  id: string,
+  matchNumber: number,
+  dateLabel: string,
+  stage: SimulatedMatchResult['stage'],
+  homeTeam: TeamState,
+  awayTeam: TeamState,
+  grades: Record<string, TeamGrade>,
+  formMap: Record<string, number>
+): {
+  result: SimulatedMatchResult;
+  homeRuns: number;
+  homeOvers: number;
+  awayRuns: number;
+  awayOvers: number;
+} {
+  const hg = grades[homeTeam.franchise.id];
+  const ag = grades[awayTeam.franchise.id];
+  const pitch = homeTeam.franchise.homeGround.pitchType;
+
+  const homeXI = selectDynamicMatchXI(
+    homeTeam,
+    pitch,
+    ag?.battingScore ?? 75,
+    formMap
+  );
+  const awayXI = selectDynamicMatchXI(
+    awayTeam,
+    pitch,
+    hg?.battingScore ?? 75,
+    formMap
+  );
+
+  const homeDynamic = computeXIRatings(homeXI, pitch, formMap);
+  const awayDynamic = computeXIRatings(awayXI, pitch, formMap);
+
+  const par = homeTeam.franchise.homeGround.parScore;
+  const homeBoost = (homeDynamic.pitchFit - 70) * 0.18;
+
+  const homeBat = homeDynamic.bat;
+  const homeBowl = homeDynamic.bowl;
+  const awayBat = awayDynamic.bat;
+  const awayBowl = awayDynamic.bowl;
+
+  const homeExpected =
+    par + (homeBat - awayBowl) * 0.45 + homeBoost + (Math.random() * 34 - 17);
+  const awayExpected =
+    par + (awayBat - homeBowl) * 0.45 - homeBoost * 0.4 + (Math.random() * 34 - 17);
+
+  let homeRuns = Math.round(clamp(homeExpected, 115, 255));
+  let awayRuns = Math.round(clamp(awayExpected, 110, 255));
+
+  if (homeRuns === awayRuns) {
+    if (Math.random() >= 0.5) homeRuns += 1;
+    else awayRuns += 1;
+  }
+
+  const homeWon = homeRuns > awayRuns;
+  const winnerTeamId = homeWon ? homeTeam.franchise.id : awayTeam.franchise.id;
+
+  const homeWickets = homeWon
+    ? Math.floor(2 + Math.random() * 5)
+    : Math.floor(6 + Math.random() * 4);
+  const awayWickets = !homeWon
+    ? Math.floor(2 + Math.random() * 5)
+    : Math.floor(6 + Math.random() * 4);
+
+  const homeOversStr = '20.0';
+  const awayOversStr = homeWon ? '20.0' : '19.2';
+  const awayTotalBalls = homeWon ? 120 : 116;
+
+  const innings1 = buildInningsScorecard(
+    homeTeam,
+    awayTeam,
+    homeXI,
+    awayXI,
+    homeRuns,
+    homeWickets,
+    homeOversStr,
+    120
+  );
+  const innings2 = buildInningsScorecard(
+    awayTeam,
+    homeTeam,
+    awayXI,
+    homeXI,
+    awayRuns,
+    awayWickets,
+    awayOversStr,
+    awayTotalBalls
+  );
+
+  updateFormAfterInnings(innings1, formMap);
+  updateFormAfterInnings(innings2, formMap);
+
+  const marginText = homeWon
+    ? `${homeTeam.franchise.shortName} won by ${homeRuns - awayRuns} runs`
+    : `${awayTeam.franchise.shortName} won by ${10 - awayWickets} wickets`;
+
+  // Pick top performer from winning innings
+  const winInn = homeWon ? innings1 : innings2;
+  const loseInn = homeWon ? innings2 : innings1;
+  const topBat = [...winInn.batters].sort((a, b) => b.runs - a.runs)[0];
+  const topBowl = [...loseInn.bowlers].sort(
+    (a, b) => b.wickets - a.wickets || a.runs - b.runs
+  )[0];
+  const topPerformer =
+    topBat && (!topBowl || topBat.runs >= topBowl.wickets * 22)
+      ? `${topBat.name} (${topBat.runs}* off ${topBat.balls})`
+      : topBowl
+        ? `${topBowl.name} (${topBowl.wickets}/${topBowl.runs})`
+        : 'Team Effort';
+
+  return {
+    result: {
+      id,
+      matchNumber,
+      dateLabel,
+      stage,
+      homeTeamId: homeTeam.franchise.id,
+      awayTeamId: awayTeam.franchise.id,
+      stadium: homeTeam.franchise.homeGround.stadium,
+      homeScore: `${homeRuns}/${homeWickets} (${homeOversStr})`,
+      awayScore: `${awayRuns}/${awayWickets} (${awayOversStr})`,
+      winnerTeamId,
+      summary: marginText,
+      topPerformer,
+      innings1,
+      innings2,
+    },
+    homeRuns,
+    homeOvers: 20,
+    awayRuns,
+    awayOvers: homeWon ? 20 : 19.33,
+  };
+}
+
+/**
+ * Simulates a full 10-team double round-robin IPL league (18 matches per team)
+ * followed by Qualifier 1, Eliminator, Qualifier 2, and Final, generating
+ * full match scorecards, schedule timetable, player stats, and team stats.
+ */
+export function simulateIPLSeason(
+  teams: Record<string, TeamState>,
+  grades: Record<string, TeamGrade>
+): SeasonSimulationResult {
+  const teamList = Object.values(teams);
+  const table: Record<
+    string,
+    StandingsRow & { runsFor: number; oversFor: number; runsAgainst: number; oversAgainst: number }
+  > = {};
+  const teamStatsMap: Record<string, TeamSeasonStats> = {};
+
+  for (const t of teamList) {
+    const id = t.franchise.id;
+    table[id] = {
+      teamId: id,
+      played: 0,
+      won: 0,
+      lost: 0,
+      points: 0,
+      nrr: 0,
+      runsFor: 0,
+      oversFor: 0,
+      runsAgainst: 0,
+      oversAgainst: 0,
+    };
+    teamStatsMap[id] = {
+      teamId: id,
+      matches: 0,
+      won: 0,
+      lost: 0,
+      totalRunsFor: 0,
+      totalWicketsTaken: 0,
+      highestTotal: 0,
+      lowestTotal: 999,
+      avgScore: 0,
+      homeWins: 0,
+      awayWins: 0,
+    };
+  }
+
+  // Generate interleaved schedule pairs using Berger round-robin algorithm
+  const n = teamList.length;
+  const ids = teamList.map((t) => t.franchise.id);
+  const fixtures: Array<{ homeId: string; awayId: string }> = [];
+
+  for (let half = 0; half < 2; half++) {
+    const rotation = [...ids];
+    for (let round = 0; round < n - 1; round++) {
+      for (let i = 0; i < n / 2; i++) {
+        const t1 = rotation[i];
+        const t2 = rotation[n - 1 - i];
+        const homeId = (round + i + half) % 2 === 0 ? t1 : t2;
+        const awayId = homeId === t1 ? t2 : t1;
+        fixtures.push({ homeId, awayId });
+      }
+      const last = rotation.pop()!;
+      rotation.splice(1, 0, last);
+    }
+  }
+
+  const allMatches: SimulatedMatchResult[] = [];
+  const formMap: Record<string, number> = {};
+  let matchNum = 1;
+
+  for (const fix of fixtures) {
+    const home = teams[fix.homeId];
+    const away = teams[fix.awayId];
+    const sim = simulateMatch(
+      `M${matchNum}`,
+      matchNum,
+      formatDateLabel(matchNum - 1),
+      'LEAGUE',
+      home,
+      away,
+      grades,
+      formMap
+    );
+    allMatches.push(sim.result);
+    matchNum++;
+
+    const hRow = table[fix.homeId];
+    const aRow = table[fix.awayId];
+    hRow.played++;
+    aRow.played++;
+    hRow.runsFor += sim.homeRuns;
+    hRow.oversFor += sim.homeOvers;
+    hRow.runsAgainst += sim.awayRuns;
+    hRow.oversAgainst += sim.awayOvers;
+    aRow.runsFor += sim.awayRuns;
+    aRow.oversFor += sim.awayOvers;
+    aRow.runsAgainst += sim.homeRuns;
+    aRow.oversAgainst += sim.homeOvers;
+
+    if (sim.result.winnerTeamId === fix.homeId) {
+      hRow.won++;
+      hRow.points += 2;
+      aRow.lost++;
+    } else {
+      aRow.won++;
+      aRow.points += 2;
+      hRow.lost++;
+    }
+  }
+
+  const standings: StandingsRow[] = Object.values(table)
+    .map((r) => {
+      const nrr =
+        r.runsFor / Math.max(1, r.oversFor) -
+        r.runsAgainst / Math.max(1, r.oversAgainst);
+      return {
+        teamId: r.teamId,
+        played: r.played,
+        won: r.won,
+        lost: r.lost,
+        points: r.points,
+        nrr: Number(nrr.toFixed(3)),
+      };
+    })
+    .sort((a, b) => b.points - a.points || b.nrr - a.nrr);
+
+  // Playoffs
+  const seed1 = teams[standings[0].teamId];
+  const seed2 = teams[standings[1].teamId];
+  const seed3 = teams[standings[2].teamId];
+  const seed4 = teams[standings[3].teamId];
+
+  const q1 = simulateMatch(
+    'Q1',
+    matchNum++,
+    formatDateLabel(92),
+    'QUALIFIER_1',
+    seed1,
+    seed2,
+    grades,
+    formMap
+  ).result;
+  const elim = simulateMatch(
+    'ELIM',
+    matchNum++,
+    formatDateLabel(94),
+    'ELIMINATOR',
+    seed3,
+    seed4,
+    grades,
+    formMap
+  ).result;
+
+  const q1Winner = teams[q1.winnerTeamId];
+  const q1Loser = q1.winnerTeamId === seed1.franchise.id ? seed2 : seed1;
+  const elimWinner = teams[elim.winnerTeamId];
+
+  const q2 = simulateMatch(
+    'Q2',
+    matchNum++,
+    formatDateLabel(96),
+    'QUALIFIER_2',
+    q1Loser,
+    elimWinner,
+    grades,
+    formMap
+  ).result;
+  const q2Winner = teams[q2.winnerTeamId];
+
+  const finalMatch = simulateMatch(
+    'FINAL',
+    matchNum++,
+    formatDateLabel(99),
+    'FINAL',
+    q1Winner,
+    q2Winner,
+    grades,
+    formMap
+  ).result;
+
+  const playoffs = [q1, elim, q2, finalMatch];
+  allMatches.push(...playoffs);
+
+  // Aggregate Player & Team Season Stats from allMatches
+  const playerMap: Record<
+    string,
+    PlayerSeasonStats & { bestW: number; bestR: number }
+  > = {};
+
+  const ensurePlayer = (
+    id: string,
+    name: string,
+    teamId: string,
+    role: PlayerSeasonStats['role']
+  ) => {
+    if (!playerMap[id]) {
+      playerMap[id] = {
+        playerId: id,
+        name,
+        teamId,
+        role,
+        matches: 0,
+        runs: 0,
+        balls: 0,
+        strikeRate: 0,
+        highScore: 0,
+        fifties: 0,
+        hundreds: 0,
+        fours: 0,
+        sixes: 0,
+        wickets: 0,
+        runsConceded: 0,
+        oversBowled: 0,
+        economy: 0,
+        bestBowling: '-',
+        bestW: -1,
+        bestR: 999,
+      };
+    }
+    return playerMap[id];
+  };
+
+  for (const m of allMatches) {
+    const hStat = teamStatsMap[m.homeTeamId];
+    const aStat = teamStatsMap[m.awayTeamId];
+    hStat.matches++;
+    aStat.matches++;
+    hStat.totalRunsFor += m.innings1.totalRuns;
+    aStat.totalRunsFor += m.innings2.totalRuns;
+    hStat.totalWicketsTaken += m.innings2.wickets;
+    aStat.totalWicketsTaken += m.innings1.wickets;
+    hStat.highestTotal = Math.max(hStat.highestTotal, m.innings1.totalRuns);
+    hStat.lowestTotal = Math.min(hStat.lowestTotal, m.innings1.totalRuns);
+    aStat.highestTotal = Math.max(aStat.highestTotal, m.innings2.totalRuns);
+    aStat.lowestTotal = Math.min(aStat.lowestTotal, m.innings2.totalRuns);
+
+    if (m.winnerTeamId === m.homeTeamId) {
+      hStat.won++;
+      hStat.homeWins++;
+      aStat.lost++;
+    } else {
+      aStat.won++;
+      aStat.awayWins++;
+      hStat.lost++;
+    }
+
+    const seenInMatch = new Set<string>();
+
+    const recordInnings = (inn: InningsScorecard) => {
+      const batTeam = teams[inn.battingTeamId];
+      const bowlTeam = teams[inn.bowlingTeamId];
+
+      for (const b of inn.batters) {
+        const ps = ensurePlayer(b.playerId, b.name, batTeam.franchise.id, b.role);
+        if (!seenInMatch.has(b.playerId)) {
+          ps.matches++;
+          seenInMatch.add(b.playerId);
+        }
+        ps.runs += b.runs;
+        ps.balls += b.balls;
+        ps.fours += b.fours;
+        ps.sixes += b.sixes;
+        if (b.runs > ps.highScore) ps.highScore = b.runs;
+        if (b.runs >= 100) ps.hundreds++;
+        else if (b.runs >= 50) ps.fifties++;
+      }
+
+      for (const bw of inn.bowlers) {
+        const squadMatch = bowlTeam.squad.find((s) => s.player.id === bw.playerId);
+        const role = squadMatch?.player.role ?? 'BOWL';
+        const ps = ensurePlayer(bw.playerId, bw.name, bowlTeam.franchise.id, role);
+        if (!seenInMatch.has(bw.playerId)) {
+          ps.matches++;
+          seenInMatch.add(bw.playerId);
+        }
+        ps.wickets += bw.wickets;
+        ps.runsConceded += bw.runs;
+        const [ovWhole, ovRem] = bw.overs.split('.').map(Number);
+        ps.oversBowled += ovWhole + (ovRem || 0) / 6;
+        if (
+          bw.wickets > ps.bestW ||
+          (bw.wickets === ps.bestW && bw.runs < ps.bestR)
+        ) {
+          ps.bestW = bw.wickets;
+          ps.bestR = bw.runs;
+          ps.bestBowling = `${bw.wickets}/${bw.runs}`;
+        }
+      }
+    };
+
+    recordInnings(m.innings1);
+    recordInnings(m.innings2);
+  }
+
+  const playerStats: PlayerSeasonStats[] = Object.values(playerMap).map((ps) => ({
+    playerId: ps.playerId,
+    name: ps.name,
+    teamId: ps.teamId,
+    role: ps.role,
+    matches: ps.matches,
+    runs: ps.runs,
+    balls: ps.balls,
+    strikeRate: ps.balls > 0 ? Number(((ps.runs / ps.balls) * 100).toFixed(1)) : 0,
+    highScore: ps.highScore,
+    fifties: ps.fifties,
+    hundreds: ps.hundreds,
+    fours: ps.fours,
+    sixes: ps.sixes,
+    wickets: ps.wickets,
+    runsConceded: ps.runsConceded,
+    oversBowled: Number(ps.oversBowled.toFixed(1)),
+    economy:
+      ps.oversBowled > 0
+        ? Number((ps.runsConceded / ps.oversBowled).toFixed(2))
+        : 0,
+    bestBowling: ps.bestBowling,
+  }));
+
+  const teamStats: TeamSeasonStats[] = Object.values(teamStatsMap).map((ts) => ({
+    ...ts,
+    lowestTotal: ts.lowestTotal === 999 ? 0 : ts.lowestTotal,
+    avgScore: ts.matches > 0 ? Math.round(ts.totalRunsFor / ts.matches) : 0,
+  }));
+
+  const championTeamId = finalMatch.winnerTeamId;
+  const runnerUpTeamId =
+    championTeamId === q1Winner.franchise.id
+      ? q2Winner.franchise.id
+      : q1Winner.franchise.id;
+
+  const orangeCap = [...playerStats].sort((a, b) => b.runs - a.runs)[0];
+  const mvpText = orangeCap
+    ? `${orangeCap.name} (${teams[orangeCap.teamId]?.franchise.shortName} • ${orangeCap.runs} runs)`
+    : `${teams[championTeamId].franchise.shortName}`;
+
+  return {
+    standings,
+    matches: allMatches,
+    playoffs,
+    playerStats,
+    teamStats,
+    championTeamId,
+    runnerUpTeamId,
+    mvpText,
+  };
+}
