@@ -142,6 +142,14 @@ test('simulateIPLSeason generates timetable, scorecards, and player/team stats',
   assert.ok(season.playerStats.length > 0);
   assert.ok(season.matches[0].innings1.batters.length > 0);
   assert.ok(season.matches[0].innings1.bowlers.length > 0);
+  assert.equal(
+    season.matches[0].innings1.batters.length +
+      (season.matches[0].innings1.yetToBat?.length ?? 0),
+    11
+  );
+  assert.ok(season.matches[0].innings1.battingImpactSub);
+  assert.ok(season.matches[0].innings2.bowlingImpactSub);
+  assert.ok(season.matches[0].tossSummary?.includes('won the toss'));
 });
 
 test('playingRole places openers before top-order batters like Suryakumar Yadav', () => {

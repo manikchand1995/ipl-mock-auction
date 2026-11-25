@@ -201,6 +201,13 @@ export interface BowlerFigures {
   economy: number;
 }
 
+export interface ImpactSubInfo {
+  inPlayerId: string;
+  inPlayerName: string;
+  outPlayerId: string;
+  outPlayerName: string;
+}
+
 export interface InningsScorecard {
   battingTeamId: string;
   bowlingTeamId: string;
@@ -209,7 +216,10 @@ export interface InningsScorecard {
   overs: string;
   extras: number;
   batters: BatterInnings[];
+  yetToBat?: { playerId: string; name: string; role: PlayerRole }[];
   bowlers: BowlerFigures[];
+  battingImpactSub?: ImpactSubInfo;
+  bowlingImpactSub?: ImpactSubInfo;
 }
 
 export interface SimulatedMatchResult {
@@ -223,6 +233,7 @@ export interface SimulatedMatchResult {
   homeScore: string;
   awayScore: string;
   winnerTeamId: string;
+  tossSummary?: string;
   summary: string;
   topPerformer: string;
   innings1: InningsScorecard;

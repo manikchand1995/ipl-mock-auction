@@ -3,6 +3,7 @@ import {
   AcquiredPlayer,
   BatterInnings,
   BowlerFigures,
+  ImpactSubInfo,
   InningsScorecard,
   PitchType,
   PlayerSeasonStats,
@@ -321,6 +322,12 @@ function buildInningsScorecard(
     };
   });
 
+  const yetToBat = battersXI.slice(numBatted).map((b) => ({
+    playerId: b.player.id,
+    name: b.player.name,
+    role: b.player.role,
+  }));
+
   return {
     battingTeamId: battingTeam.franchise.id,
     bowlingTeamId: bowlingTeam.franchise.id,
@@ -329,6 +336,7 @@ function buildInningsScorecard(
     overs: oversStr,
     extras,
     batters,
+    yetToBat,
     bowlers: bowlerFigures,
   };
 }
@@ -405,75 +413,188 @@ function simulateMatch(
     formMap
   );
 
-  const homeDynamic = computeXIRatings(homeXI, pitch, formMap);
-  const awayDynamic = computeXIRatings(awayXI, pitch, formMap);
+  // Select Impact Player substitutions:
+  // Home (bats 1st, bowls 2nd) subs in a bowler/AR for a pure batter before 2nd innings bowling.
+  // Away (bowls 1st, chases 2nd) subs in a batter/AR for a pure bowler before 2nd innings chase.
+  const pickImpactSub = (
+    team: TeamState,
+    xi: AcquiredPlayer[],
+    preferRole: 'BOWL' | 'BAT'
+  ): {
+    updatedXI: AcquiredPlayer[];
+    info: ImpactSubInfo;
+  } | null => {
+    const xiIds = new Set(xi.map((p) => p.player.id));
+    const overseasInXI = xi.filter((p) => p.player.isOverseas).length;
+    const bench = team.squad.filter((p) => !xiIds.has(p.player.id));
+    if (bench.length === 0) return null;
+
+    const scoreIn = (p: AcquiredPlayer) => {
+      const form = formMap[p.player.id] ?? 0;
+      const roleMatch =
+        preferRole === 'BOWL'
+          ? p.player.role === 'BOWL' || p.player.role === 'AR'
+            ? 14
+            : -8
+          : p.player.role === 'BAT' || p.player.role === 'WK' || p.player.role === 'AR'
+            ? 14
+            : -8;
+      const skill =
+        preferRole === 'BOWL'
+          ? p.player.ratings.bowling
+          : p.player.ratings.batting;
+      return skill + p.player.ratings.overall * 0.4 + roleMatch + form * 0.5;
+    };
+
+    const sortedBench = [...bench].sort((a, b) => scoreIn(b) - scoreIn(a));
+    for (const inPlayer of sortedBench) {
+      const mustReplaceOverseas = inPlayer.player.isOverseas && overseasInXI >= 4;
+      const replaceable = xi.filter((p) =>
+        mustReplaceOverseas ? p.player.isOverseas : true
+      );
+      if (replaceable.length === 0) continue;
+
+      // Replace a pure batter (when subbing in a bowler) or pure bowler (when subbing in a batter)
+      const outSorted = [...replaceable].sort((a, b) => {
+        const aPref =
+          preferRole === 'BOWL'
+            ? a.player.role === 'BAT' || a.player.role === 'WK'
+              ? 0
+              : 1
+            : a.player.role === 'BOWL'
+              ? 0
+              : 1;
+        const bPref =
+          preferRole === 'BOWL'
+            ? b.player.role === 'BAT' || b.player.role === 'WK'
+              ? 0
+              : 1
+            : b.player.role === 'BOWL'
+              ? 0
+              : 1;
+        if (aPref !== bPref) return aPref - bPref;
+        return a.player.ratings.overall - b.player.ratings.overall;
+      });
+
+      const outPlayer = outSorted[0];
+      const updatedXI = xi.map((p) =>
+        p.player.id === outPlayer.player.id ? inPlayer : p
+      );
+      return {
+        updatedXI,
+        info: {
+          inPlayerId: inPlayer.player.id,
+          inPlayerName: inPlayer.player.name,
+          outPlayerId: outPlayer.player.id,
+          outPlayerName: outPlayer.player.name,
+        },
+      };
+    }
+    return null;
+  };
+
+  // Toss
+  const tossWinner = Math.random() < 0.5 ? homeTeam : awayTeam;
+  const tossDecision: 'bat' | 'bowl' =
+    Math.random() < (pitch === 'SPIN_FRIENDLY' ? 0.45 : 0.7) ? 'bowl' : 'bat';
+  const tossSummary = `${tossWinner.franchise.shortName} won the toss and elected to ${tossDecision} first`;
+  const homeBatsFirst =
+    (tossWinner === homeTeam && tossDecision === 'bat') ||
+    (tossWinner === awayTeam && tossDecision === 'bowl');
+
+  const batFirstTeam = homeBatsFirst ? homeTeam : awayTeam;
+  const chaseTeam = homeBatsFirst ? awayTeam : homeTeam;
+  const batFirstXI = homeBatsFirst ? homeXI : awayXI;
+  const chaseXI = homeBatsFirst ? awayXI : homeXI;
+
+  const batFirstImpact = pickImpactSub(batFirstTeam, batFirstXI, 'BOWL');
+  const chaseImpact = pickImpactSub(chaseTeam, chaseXI, 'BAT');
+  const batFirstXIForBowl = batFirstImpact ? batFirstImpact.updatedXI : batFirstXI;
+  const chaseXIForBat = chaseImpact ? chaseImpact.updatedXI : chaseXI;
+
+  const batFirstDynamic = computeXIRatings(batFirstXI, pitch, formMap);
+  const chaseDynamic = computeXIRatings(chaseXIForBat, pitch, formMap);
 
   const par = homeTeam.franchise.homeGround.parScore;
-  const homeBoost = (homeDynamic.pitchFit - 70) * 0.18;
+  const batFirstHomeBoost = homeBatsFirst
+    ? (batFirstDynamic.pitchFit - 70) * 0.18
+    : -(chaseDynamic.pitchFit - 70) * 0.08;
+  const chaseHomeBoost = !homeBatsFirst
+    ? (chaseDynamic.pitchFit - 70) * 0.18
+    : -(batFirstDynamic.pitchFit - 70) * 0.08;
 
-  const homeBat = homeDynamic.bat;
-  const homeBowl = homeDynamic.bowl;
-  const awayBat = awayDynamic.bat;
-  const awayBowl = awayDynamic.bowl;
+  const batFirstExpected =
+    par +
+    (batFirstDynamic.bat - chaseDynamic.bowl) * 0.45 +
+    batFirstHomeBoost +
+    (Math.random() * 34 - 17);
+  const chaseExpected =
+    par +
+    (chaseDynamic.bat - batFirstDynamic.bowl) * 0.45 +
+    chaseHomeBoost +
+    (Math.random() * 34 - 17);
 
-  const homeExpected =
-    par + (homeBat - awayBowl) * 0.45 + homeBoost + (Math.random() * 34 - 17);
-  const awayExpected =
-    par + (awayBat - homeBowl) * 0.45 - homeBoost * 0.4 + (Math.random() * 34 - 17);
+  let batFirstRuns = Math.round(clamp(batFirstExpected, 115, 255));
+  let chaseRuns = Math.round(clamp(chaseExpected, 110, 255));
 
-  let homeRuns = Math.round(clamp(homeExpected, 115, 255));
-  let awayRuns = Math.round(clamp(awayExpected, 110, 255));
-
-  if (homeRuns === awayRuns) {
-    if (Math.random() >= 0.5) homeRuns += 1;
-    else awayRuns += 1;
+  if (batFirstRuns === chaseRuns) {
+    if (Math.random() >= 0.5) batFirstRuns += 1;
+    else chaseRuns += 1;
   }
 
-  const homeWon = homeRuns > awayRuns;
-  const winnerTeamId = homeWon ? homeTeam.franchise.id : awayTeam.franchise.id;
+  const batFirstWon = batFirstRuns > chaseRuns;
+  const winnerTeamId = batFirstWon
+    ? batFirstTeam.franchise.id
+    : chaseTeam.franchise.id;
 
-  const homeWickets = homeWon
+  const batFirstWickets = batFirstWon
     ? Math.floor(2 + Math.random() * 5)
     : Math.floor(6 + Math.random() * 4);
-  const awayWickets = !homeWon
+  const chaseWickets = !batFirstWon
     ? Math.floor(2 + Math.random() * 5)
     : Math.floor(6 + Math.random() * 4);
 
-  const homeOversStr = '20.0';
-  const awayOversStr = homeWon ? '20.0' : '19.2';
-  const awayTotalBalls = homeWon ? 120 : 116;
+  const batFirstOversStr = '20.0';
+  const chaseOversStr = batFirstWon ? '20.0' : '19.2';
+  const chaseTotalBalls = batFirstWon ? 120 : 116;
+  const chaseOversFloat = batFirstWon ? 20 : 19.33;
 
   const innings1 = buildInningsScorecard(
-    homeTeam,
-    awayTeam,
-    homeXI,
-    awayXI,
-    homeRuns,
-    homeWickets,
-    homeOversStr,
+    batFirstTeam,
+    chaseTeam,
+    batFirstXI,
+    chaseXI,
+    batFirstRuns,
+    batFirstWickets,
+    batFirstOversStr,
     120
   );
+  if (batFirstImpact) innings1.battingImpactSub = batFirstImpact.info;
+  if (chaseImpact) innings1.bowlingImpactSub = chaseImpact.info;
+
   const innings2 = buildInningsScorecard(
-    awayTeam,
-    homeTeam,
-    awayXI,
-    homeXI,
-    awayRuns,
-    awayWickets,
-    awayOversStr,
-    awayTotalBalls
+    chaseTeam,
+    batFirstTeam,
+    chaseXIForBat,
+    batFirstXIForBowl,
+    chaseRuns,
+    chaseWickets,
+    chaseOversStr,
+    chaseTotalBalls
   );
+  if (chaseImpact) innings2.battingImpactSub = chaseImpact.info;
+  if (batFirstImpact) innings2.bowlingImpactSub = batFirstImpact.info;
 
   updateFormAfterInnings(innings1, formMap);
   updateFormAfterInnings(innings2, formMap);
 
-  const marginText = homeWon
-    ? `${homeTeam.franchise.shortName} won by ${homeRuns - awayRuns} runs`
-    : `${awayTeam.franchise.shortName} won by ${10 - awayWickets} wickets`;
+  const marginText = batFirstWon
+    ? `${batFirstTeam.franchise.shortName} won by ${batFirstRuns - chaseRuns} runs`
+    : `${chaseTeam.franchise.shortName} won by ${10 - chaseWickets} wickets`;
 
   // Pick top performer from winning innings
-  const winInn = homeWon ? innings1 : innings2;
-  const loseInn = homeWon ? innings2 : innings1;
+  const winInn = batFirstWon ? innings1 : innings2;
+  const loseInn = batFirstWon ? innings2 : innings1;
   const topBat = [...winInn.batters].sort((a, b) => b.runs - a.runs)[0];
   const topBowl = [...loseInn.bowlers].sort(
     (a, b) => b.wickets - a.wickets || a.runs - b.runs
@@ -484,6 +605,15 @@ function simulateMatch(
       : topBowl
         ? `${topBowl.name} (${topBowl.wickets}/${topBowl.runs})`
         : 'Team Effort';
+
+  const homeRuns = homeBatsFirst ? batFirstRuns : chaseRuns;
+  const awayRuns = homeBatsFirst ? chaseRuns : batFirstRuns;
+  const homeWickets = homeBatsFirst ? batFirstWickets : chaseWickets;
+  const awayWickets = homeBatsFirst ? chaseWickets : batFirstWickets;
+  const homeOversStr = homeBatsFirst ? batFirstOversStr : chaseOversStr;
+  const awayOversStr = homeBatsFirst ? chaseOversStr : batFirstOversStr;
+  const homeOvers = homeBatsFirst ? 20 : chaseOversFloat;
+  const awayOvers = homeBatsFirst ? chaseOversFloat : 20;
 
   return {
     result: {
@@ -497,15 +627,16 @@ function simulateMatch(
       homeScore: `${homeRuns}/${homeWickets} (${homeOversStr})`,
       awayScore: `${awayRuns}/${awayWickets} (${awayOversStr})`,
       winnerTeamId,
+      tossSummary,
       summary: marginText,
       topPerformer,
       innings1,
       innings2,
     },
     homeRuns,
-    homeOvers: 20,
+    homeOvers,
     awayRuns,
-    awayOvers: homeWon ? 20 : 19.33,
+    awayOvers,
   };
 }
 

@@ -19,17 +19,51 @@ import {
 interface SeasonCenterProps {
   season: SeasonSimulationResult;
   teams: Record<string, TeamState>;
+  onSelectPlayer?: (playerId: string) => void;
 }
 
 type CenterTab = 'OVERVIEW' | 'TIMETABLE' | 'PLAYER_STATS' | 'TEAM_STATS';
 type PlayerStatSort = 'RUNS' | 'WICKETS' | 'SIXES' | 'ECONOMY';
 
+function ImpactArrow({
+  playerId,
+  sub,
+}: {
+  playerId: string;
+  sub?: InningsScorecard['battingImpactSub'];
+}) {
+  if (!sub) return null;
+  if (sub.inPlayerId === playerId) {
+    return (
+      <span
+        className="ml-1 inline-flex items-center text-[11px] font-black text-emerald-400"
+        title={`Impact Player IN (replaced ${sub.outPlayerName})`}
+      >
+        ▲
+      </span>
+    );
+  }
+  if (sub.outPlayerId === playerId) {
+    return (
+      <span
+        className="ml-1 inline-flex items-center text-[11px] font-black text-rose-400"
+        title={`Replaced by Impact Player (${sub.inPlayerName})`}
+      >
+        ▼
+      </span>
+    );
+  }
+  return null;
+}
+
 function InningsTable({
   innings,
   teams,
+  onSelectPlayer,
 }: {
   innings: InningsScorecard;
   teams: Record<string, TeamState>;
+  onSelectPlayer?: (playerId: string) => void;
 }) {
   const batTeam = teams[innings.battingTeamId];
   return (
@@ -61,7 +95,14 @@ function InningsTable({
             {innings.batters.map((b) => (
               <tr key={b.playerId} className="border-b border-slate-800/50">
                 <td className="py-1.5 pr-2 font-semibold text-white">
-                  {b.name}
+                  <button
+                    type="button"
+                    onClick={() => onSelectPlayer?.(b.playerId)}
+                    className="text-left transition hover:text-amber-300 hover:underline"
+                  >
+                    {b.name}
+                  </button>
+                  <ImpactArrow playerId={b.playerId} sub={innings.battingImpactSub} />
                 </td>
                 <td className="py-1.5 pr-2 text-[11px] text-slate-400">
                   {b.outText}
@@ -87,8 +128,28 @@ function InningsTable({
         </table>
       </div>
 
-      <div className="text-[11px] text-slate-400">
-        Extras: <strong className="text-slate-200">{innings.extras}</strong>
+      <div className="space-y-1.5 text-[11px] text-slate-400">
+        <div>
+          Extras: <strong className="text-slate-200">{innings.extras}</strong>
+        </div>
+        {innings.yetToBat && innings.yetToBat.length > 0 && (
+          <div className="rounded-lg border border-slate-800/80 bg-slate-900/50 px-2.5 py-1.5 leading-relaxed">
+            <span className="font-semibold text-slate-300">Yet to Bat: </span>
+            {innings.yetToBat.map((p, idx) => (
+              <span key={p.playerId}>
+                <button
+                  type="button"
+                  onClick={() => onSelectPlayer?.(p.playerId)}
+                  className="text-slate-200 transition hover:text-amber-300 hover:underline"
+                >
+                  {p.name}
+                </button>
+                <ImpactArrow playerId={p.playerId} sub={innings.battingImpactSub} />
+                {idx < innings.yetToBat!.length - 1 ? ', ' : ''}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Bowling */}
@@ -107,7 +168,14 @@ function InningsTable({
             {innings.bowlers.map((bw) => (
               <tr key={bw.playerId} className="border-b border-slate-800/50">
                 <td className="py-1.5 pr-2 font-semibold text-white">
-                  {bw.name}
+                  <button
+                    type="button"
+                    onClick={() => onSelectPlayer?.(bw.playerId)}
+                    className="text-left transition hover:text-amber-300 hover:underline"
+                  >
+                    {bw.name}
+                  </button>
+                  <ImpactArrow playerId={bw.playerId} sub={innings.bowlingImpactSub} />
                 </td>
                 <td className="px-2 py-1.5 text-right font-mono text-slate-300">
                   {bw.overs}
@@ -130,7 +198,11 @@ function InningsTable({
   );
 }
 
-export default function SeasonCenter({ season, teams }: SeasonCenterProps) {
+export default function SeasonCenter({
+  season,
+  teams,
+  onSelectPlayer,
+}: SeasonCenterProps) {
   const [tab, setTab] = useState<CenterTab>('OVERVIEW');
   const [selectedMatch, setSelectedMatch] =
     useState<SimulatedMatchResult | null>(null);
@@ -213,7 +285,13 @@ export default function SeasonCenter({ season, teams }: SeasonCenterProps) {
           {orangeCap && (
             <div className="rounded-xl border border-orange-500/30 bg-orange-500/10 px-3.5 py-2">
               <span className="font-bold text-orange-300">🟠 Orange Cap: </span>
-              <strong className="text-white">{orangeCap.name}</strong>{' '}
+              <button
+                type="button"
+                onClick={() => onSelectPlayer?.(orangeCap.playerId)}
+                className="font-bold text-white transition hover:text-amber-300 hover:underline"
+              >
+                {orangeCap.name}
+              </button>{' '}
               <span className="text-slate-300">
                 ({teams[orangeCap.teamId]?.franchise.shortName} • {orangeCap.runs}{' '}
                 runs)
@@ -223,7 +301,13 @@ export default function SeasonCenter({ season, teams }: SeasonCenterProps) {
           {purpleCap && (
             <div className="rounded-xl border border-purple-500/30 bg-purple-500/10 px-3.5 py-2">
               <span className="font-bold text-purple-300">🟣 Purple Cap: </span>
-              <strong className="text-white">{purpleCap.name}</strong>{' '}
+              <button
+                type="button"
+                onClick={() => onSelectPlayer?.(purpleCap.playerId)}
+                className="font-bold text-white transition hover:text-amber-300 hover:underline"
+              >
+                {purpleCap.name}
+              </button>{' '}
               <span className="text-slate-300">
                 ({teams[purpleCap.teamId]?.franchise.shortName} •{' '}
                 {purpleCap.wickets} wkts)
@@ -524,7 +608,13 @@ export default function SeasonCenter({ season, teams }: SeasonCenterProps) {
                       {idx + 1}
                     </td>
                     <td className="px-3 py-2 font-semibold text-white">
-                      {ps.name}
+                      <button
+                        type="button"
+                        onClick={() => onSelectPlayer?.(ps.playerId)}
+                        className="text-left transition hover:text-amber-300 hover:underline"
+                      >
+                        {ps.name}
+                      </button>
                     </td>
                     <td className="px-2 py-2 text-slate-300">
                       {teams[ps.teamId]?.franchise.shortName}
@@ -642,6 +732,11 @@ export default function SeasonCenter({ season, teams }: SeasonCenterProps) {
                   {teams[selectedMatch.awayTeamId]?.franchise.shortName} —{' '}
                   <span className="text-emerald-400">{selectedMatch.summary}</span>
                 </h3>
+                {selectedMatch.tossSummary && (
+                  <div className="mt-1 text-xs text-slate-300">
+                    🪙 {selectedMatch.tossSummary}
+                  </div>
+                )}
               </div>
               <button
                 onClick={() => setSelectedMatch(null)}
@@ -652,8 +747,16 @@ export default function SeasonCenter({ season, teams }: SeasonCenterProps) {
             </div>
 
             <div className="flex-1 space-y-4 overflow-y-auto p-5">
-              <InningsTable innings={selectedMatch.innings1} teams={teams} />
-              <InningsTable innings={selectedMatch.innings2} teams={teams} />
+              <InningsTable
+                innings={selectedMatch.innings1}
+                teams={teams}
+                onSelectPlayer={onSelectPlayer}
+              />
+              <InningsTable
+                innings={selectedMatch.innings2}
+                teams={teams}
+                onSelectPlayer={onSelectPlayer}
+              />
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { Award, Play, RotateCcw, Sparkles, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 import { formatINR, PLAYING_ROLE_LABELS } from '@shared/rules';
 import { PublicRoomState } from '@shared/types';
+import PlayerStatsModal from './PlayerStatsModal';
 import SeasonCenter from './SeasonCenter';
 
 interface PostAuctionViewProps {
@@ -25,6 +26,7 @@ export default function PostAuctionView({
   const [selectedTeamId, setSelectedTeamId] = useState(
     myTeam?.franchise.id || 'csk'
   );
+  const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
 
   const grades = state.grades || {};
   const rankedTeams = Object.values(state.teams).sort(
@@ -127,12 +129,16 @@ export default function PostAuctionView({
                       {idx + 1}.
                     </span>
                     <div>
-                      <div className="font-semibold text-white">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPlayerId(item.player.id)}
+                        className="text-left font-semibold text-white transition hover:text-amber-300 hover:underline"
+                      >
                         {item.player.name}{' '}
                         {item.player.isOverseas && (
                           <span className="text-sky-400">✈️</span>
                         )}
-                      </div>
+                      </button>
                       <div className="text-[11px] text-slate-400">
                         {item.player.playingRole
                           ? PLAYING_ROLE_LABELS[item.player.playingRole]
@@ -153,9 +159,15 @@ export default function PostAuctionView({
                 <span className="font-bold text-sky-300 uppercase">
                   Impact Player:{' '}
                 </span>
-                <span className="font-semibold text-white">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSelectedPlayerId(activeGrade.impactPlayer!.player.id)
+                  }
+                  className="font-semibold text-white transition hover:text-amber-300 hover:underline"
+                >
                   {activeGrade.impactPlayer.player.name}
-                </span>{' '}
+                </button>{' '}
                 ({activeGrade.impactPlayer.player.role} • OVR{' '}
                 {activeGrade.impactPlayer.player.ratings.overall})
               </div>
@@ -185,12 +197,16 @@ export default function PostAuctionView({
                           className="flex items-center justify-between rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2 text-xs"
                         >
                           <div>
-                            <div className="font-medium text-slate-200">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedPlayerId(item.player.id)}
+                              className="text-left font-medium text-slate-200 transition hover:text-amber-300 hover:underline"
+                            >
                               {item.player.name}{' '}
                               {item.player.isOverseas && (
                                 <span className="text-sky-400">✈️</span>
                               )}
-                            </div>
+                            </button>
                             <div className="text-[11px] text-slate-500">
                               {item.player.role} • OVR {item.player.ratings.overall}
                               {item.acquiredVia !== 'AUCTION'
@@ -273,8 +289,16 @@ export default function PostAuctionView({
                   <Sparkles className="h-3.5 w-3.5" /> Best Value Buy
                 </div>
                 <div className="mt-1 text-white">
-                  {activeGrade.bestValueBuy.player.name} —{' '}
-                  {formatINR(activeGrade.bestValueBuy.priceLakhs)}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedPlayerId(activeGrade.bestValueBuy!.player.id)
+                    }
+                    className="font-semibold transition hover:text-amber-300 hover:underline"
+                  >
+                    {activeGrade.bestValueBuy.player.name}
+                  </button>{' '}
+                  — {formatINR(activeGrade.bestValueBuy.priceLakhs)}
                 </div>
               </div>
             )}
@@ -284,8 +308,19 @@ export default function PostAuctionView({
 
       {/* Simulated IPL Season & Playoffs */}
       {state.seasonResult && (
-        <SeasonCenter season={state.seasonResult} teams={state.teams} />
+        <SeasonCenter
+          season={state.seasonResult}
+          teams={state.teams}
+          onSelectPlayer={setSelectedPlayerId}
+        />
       )}
+
+      {/* Player Stats Modal */}
+      <PlayerStatsModal
+        playerId={selectedPlayerId}
+        state={state}
+        onClose={() => setSelectedPlayerId(null)}
+      />
     </div>
   );
 }
