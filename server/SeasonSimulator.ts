@@ -1026,29 +1026,40 @@ export function simulateIPLSeason(
     recordInnings(m.innings2);
   }
 
-  const playerStats: PlayerSeasonStats[] = Object.values(playerMap).map((ps) => ({
-    playerId: ps.playerId,
-    name: ps.name,
-    teamId: ps.teamId,
-    role: ps.role,
-    matches: ps.matches,
-    runs: ps.runs,
-    balls: ps.balls,
-    strikeRate: ps.balls > 0 ? Number(((ps.runs / ps.balls) * 100).toFixed(1)) : 0,
-    highScore: ps.highScore,
-    fifties: ps.fifties,
-    hundreds: ps.hundreds,
-    fours: ps.fours,
-    sixes: ps.sixes,
-    wickets: ps.wickets,
-    runsConceded: ps.runsConceded,
-    oversBowled: Number(ps.oversBowled.toFixed(1)),
-    economy:
-      ps.oversBowled > 0
-        ? Number((ps.runsConceded / ps.oversBowled).toFixed(2))
-        : 0,
-    bestBowling: ps.bestBowling,
-  }));
+  const playerStats: PlayerSeasonStats[] = Object.values(playerMap).map((ps) => {
+    const mvpPoints = Math.round(
+      ps.runs * 0.5 +
+        ps.fours * 1.5 +
+        ps.sixes * 2.5 +
+        ps.wickets * 15 +
+        ps.fifties * 10 +
+        ps.hundreds * 25
+    );
+    return {
+      playerId: ps.playerId,
+      name: ps.name,
+      teamId: ps.teamId,
+      role: ps.role,
+      matches: ps.matches,
+      runs: ps.runs,
+      balls: ps.balls,
+      strikeRate: ps.balls > 0 ? Number(((ps.runs / ps.balls) * 100).toFixed(1)) : 0,
+      highScore: ps.highScore,
+      fifties: ps.fifties,
+      hundreds: ps.hundreds,
+      fours: ps.fours,
+      sixes: ps.sixes,
+      wickets: ps.wickets,
+      runsConceded: ps.runsConceded,
+      oversBowled: Number(ps.oversBowled.toFixed(1)),
+      economy:
+        ps.oversBowled > 0
+          ? Number((ps.runsConceded / ps.oversBowled).toFixed(2))
+          : 0,
+      bestBowling: ps.bestBowling,
+      mvpPoints,
+    };
+  });
 
   const teamStats: TeamSeasonStats[] = Object.values(teamStatsMap).map((ts) => ({
     ...ts,

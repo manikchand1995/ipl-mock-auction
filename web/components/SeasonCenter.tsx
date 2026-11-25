@@ -23,7 +23,7 @@ interface SeasonCenterProps {
 }
 
 type CenterTab = 'OVERVIEW' | 'TIMETABLE' | 'PLAYER_STATS' | 'TEAM_STATS';
-type PlayerStatSort = 'RUNS' | 'WICKETS' | 'SIXES' | 'ECONOMY';
+type PlayerStatSort = 'RUNS' | 'WICKETS' | 'SIXES' | 'ECONOMY' | 'MVP';
 
 function ImpactArrow({
   playerId,
@@ -244,6 +244,13 @@ export default function SeasonCenter({
       )[0],
     [season.playerStats]
   );
+  const mvpPlayer = useMemo(
+    () =>
+      [...season.playerStats].sort(
+        (a, b) => (b.mvpPoints ?? 0) - (a.mvpPoints ?? 0) || b.runs - a.runs
+      )[0],
+    [season.playerStats]
+  );
 
   const filteredMatches = useMemo(() => {
     return season.matches.filter((m) => {
@@ -278,6 +285,8 @@ export default function SeasonCenter({
         if (statSort === 'WICKETS')
           return b.wickets - a.wickets || a.economy - b.economy;
         if (statSort === 'SIXES') return b.sixes - a.sixes || b.runs - a.runs;
+        if (statSort === 'MVP')
+          return (b.mvpPoints ?? 0) - (a.mvpPoints ?? 0) || b.runs - a.runs;
         return a.economy - b.economy || b.wickets - a.wickets;
       })
       .slice(0, 40);
@@ -331,6 +340,22 @@ export default function SeasonCenter({
               <span className="text-slate-300">
                 ({teams[purpleCap.teamId]?.franchise.shortName} •{' '}
                 {purpleCap.wickets} wkts)
+              </span>
+            </div>
+          )}
+          {mvpPlayer && (
+            <div className="rounded-xl border border-amber-400/40 bg-amber-400/10 px-3.5 py-2">
+              <span className="font-bold text-amber-300">⭐ Season MVP: </span>
+              <button
+                type="button"
+                onClick={() => onSelectPlayer?.(mvpPlayer.playerId)}
+                className="font-bold text-white transition hover:text-amber-300 hover:underline"
+              >
+                {mvpPlayer.name}
+              </button>{' '}
+              <span className="text-slate-300">
+                ({teams[mvpPlayer.teamId]?.franchise.shortName} •{' '}
+                {mvpPlayer.mvpPoints ?? 0} pts)
               </span>
             </div>
           )}
@@ -559,6 +584,7 @@ export default function SeasonCenter({
                   { key: 'RUNS', label: '🟠 Most Runs' },
                   { key: 'WICKETS', label: '🟣 Most Wickets' },
                   { key: 'SIXES', label: '💥 Most Sixes' },
+                  { key: 'MVP', label: '⭐ MVP Points' },
                   { key: 'ECONOMY', label: '🎯 Best Economy (8+ Ov)' },
                 ] as const
               ).map((s) => (
@@ -615,7 +641,8 @@ export default function SeasonCenter({
                   <th className="px-2 py-2 text-right">6s</th>
                   <th className="px-2 py-2 text-right">Wkts</th>
                   <th className="px-2 py-2 text-right">Econ</th>
-                  <th className="px-3 py-2 text-right">Best</th>
+                  <th className="px-2 py-2 text-right">Best</th>
+                  <th className="px-3 py-2 text-right">MVP</th>
                 </tr>
               </thead>
               <tbody>
@@ -660,8 +687,11 @@ export default function SeasonCenter({
                     <td className="px-2 py-2 text-right font-mono text-slate-300">
                       {ps.oversBowled > 0 ? ps.economy.toFixed(2) : '-'}
                     </td>
-                    <td className="px-3 py-2 text-right font-mono text-slate-300">
+                    <td className="px-2 py-2 text-right font-mono text-slate-300">
                       {ps.bestBowling}
+                    </td>
+                    <td className="px-3 py-2 text-right font-mono font-bold text-amber-300">
+                      {ps.mvpPoints ?? 0}
                     </td>
                   </tr>
                 ))}

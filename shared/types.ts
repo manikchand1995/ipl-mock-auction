@@ -268,6 +268,7 @@ export interface PlayerSeasonStats {
   oversBowled: number;
   economy: number;
   bestBowling: string;
+  mvpPoints?: number;
 }
 
 export interface TeamSeasonStats {
