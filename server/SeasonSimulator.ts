@@ -268,23 +268,18 @@ function buildInningsScorecard(
     bowlerWickets[chosen]++;
   }
 
-  // Distribute runs conceded among bowlers
-  const bowlerRuns = new Array(selectedBowlers.length).fill(0);
-  let remainingConceded = targetTotalRuns;
-  for (let i = 0; i < selectedBowlers.length; i++) {
-    if (i === selectedBowlers.length - 1) {
-      bowlerRuns[i] = Math.max(0, remainingConceded);
-    } else {
-      const share =
-        (bowlerOvers[i] / Math.max(1, oversInt)) *
-        (0.8 + Math.random() * 0.4);
-      const r = Math.min(
-        remainingConceded,
-        Math.max(4, Math.round(targetTotalRuns * share))
-      );
-      bowlerRuns[i] = r;
-      remainingConceded -= r;
-    }
+  // Distribute runs conceded among bowlers with realistic T20 economy variance
+  const bowlerWeightsEcon = selectedBowlers.map((b, idx) => {
+    const skillFactor = Math.max(0.7, 1.35 - b.player.ratings.bowling / 140);
+    return Math.max(0.5, bowlerOvers[idx] * skillFactor * (0.65 + Math.random() * 0.75));
+  });
+  const totalBowlEconW = bowlerWeightsEcon.reduce((a, b) => a + b, 0);
+  const bowlerRuns = selectedBowlers.map((_, idx) =>
+    Math.max(4, Math.round((bowlerWeightsEcon[idx] / Math.max(0.1, totalBowlEconW)) * targetTotalRuns))
+  );
+  const sumBowlRuns = bowlerRuns.reduce((a, b) => a + b, 0);
+  if (bowlerRuns.length > 0) {
+    bowlerRuns[0] = Math.max(0, bowlerRuns[0] + (targetTotalRuns - sumBowlRuns));
   }
 
   const bowlerFigures: BowlerFigures[] = selectedBowlers.map((b, idx) => {
@@ -310,26 +305,51 @@ function buildInningsScorecard(
   const numBatted = Math.min(battersXI.length, targetWickets + 2);
   const activeBatters = battersXI.slice(0, numBatted);
 
-  // Weight runs by batting rating & position (top 5 get bigger share)
+  // Weight runs with realistic T20 variance (ducks/single-digits, cameos, 50s, 80-110* knocks)
+  const heroIdx = Math.floor(Math.random() * Math.min(4, numBatted));
   const batWeights = activeBatters.map((b, idx) => {
-    const posBoost = idx < 4 ? 1.45 : idx < 7 ? 1.0 : 0.45;
-    return Math.max(10, b.player.ratings.batting * posBoost * (0.6 + Math.random() * 0.9));
+    const posBoost = idx < 3 ? 1.35 : idx < 6 ? 1.0 : 0.48;
+    const isOut = idx < targetWickets;
+    const roll = Math.random();
+    let fateMult: number;
+    if (idx === heroIdx) {
+      fateMult = 1.9 + Math.random() * 1.9; // Standout innings
+    } else if (isOut && roll < 0.24) {
+      fateMult = 0.02 + Math.random() * 0.14; // Duck or cheap dismissal (0-10)
+    } else if (roll < 0.68) {
+      fateMult = 0.35 + Math.random() * 0.6; // Start / cameo (12-35)
+    } else if (roll < 0.92) {
+      fateMult = 1.35 + Math.random() * 1.25; // Fifty-range knock
+    } else {
+      fateMult = 2.4 + Math.random() * 1.6; // Explosive 75-110+ knock
+    }
+    return Math.max(0.5, (b.player.ratings.batting / 80) * posBoost * fateMult);
   });
   const totalBatW = batWeights.reduce((a, b) => a + b, 0);
 
   const batterRuns = activeBatters.map((_, idx) =>
-    Math.round((batWeights[idx] / Math.max(1, totalBatW)) * runsToDistribute)
+    Math.round((batWeights[idx] / Math.max(0.1, totalBatW)) * runsToDistribute)
   );
-  // Adjust rounding difference on top scorer
+  // Adjust rounding difference on highest scorer so ducks stay at 0
   const sumRuns = batterRuns.reduce((a, b) => a + b, 0);
   if (batterRuns.length > 0) {
-    batterRuns[0] = Math.max(0, batterRuns[0] + (runsToDistribute - sumRuns));
+    let maxIdx = 0;
+    for (let i = 1; i < batterRuns.length; i++) {
+      if (batterRuns[i] > batterRuns[maxIdx]) maxIdx = i;
+    }
+    batterRuns[maxIdx] = Math.max(0, batterRuns[maxIdx] + (runsToDistribute - sumRuns));
   }
 
-  // Distribute balls across batters proportional to runs
+  // Distribute balls across batters with varied strike rates (anchors vs finishers vs early outs)
   const batterBalls = batterRuns.map((r, idx) => {
-    const srTarget = 1.15 + (activeBatters[idx].player.ratings.batting / 100) * 0.45;
-    return Math.max(r > 0 ? 1 : 2, Math.round(r / srTarget + Math.random() * 4));
+    if (r === 0) return Math.floor(1 + Math.random() * 3);
+    const finisherBoost = idx >= 4 ? 0.2 : 0;
+    const srTarget =
+      0.95 +
+      (activeBatters[idx].player.ratings.batting / 100) * 0.45 +
+      finisherBoost +
+      (Math.random() * 0.65 - 0.25);
+    return Math.max(1, Math.round(r / Math.max(0.65, srTarget)));
   });
   const sumBalls = batterBalls.reduce((a, b) => a + b, 0);
   if (batterBalls.length > 0 && sumBalls > totalBalls) {

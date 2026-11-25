@@ -124,6 +124,13 @@ export default function BroadcastStage({
   const rtmTeam = lot.rtmEligibleTeamId
     ? state.teams[lot.rtmEligibleTeamId]
     : null;
+  const prevTeam = player.previousTeamId
+    ? state.teams[player.previousTeamId]
+    : null;
+  const prevTeamHasRtm =
+    state.config.enableRetentionAndRTM &&
+    prevTeam &&
+    prevTeam.rtmCardsRemaining > 0;
 
   const timerColor =
     secondsLeft <= 2
@@ -288,6 +295,25 @@ export default function BroadcastStage({
               <span className="rounded-md bg-amber-500/20 px-2.5 py-1 text-xs font-bold text-amber-300">
                 OVR {player.ratings.overall}
               </span>
+              {prevTeam && (
+                <span
+                  className={`rounded-md px-2.5 py-1 text-xs font-bold ${
+                    prevTeamHasRtm
+                      ? 'border border-emerald-400/40 bg-emerald-500/15 text-emerald-300'
+                      : 'bg-slate-800 text-slate-300'
+                  }`}
+                  title={
+                    prevTeamHasRtm
+                      ? `${prevTeam.franchise.name} has ${prevTeam.rtmCardsRemaining} RTM card(s) left`
+                      : `${prevTeam.franchise.name} (previous franchise)`
+                  }
+                >
+                  Prev: {prevTeam.franchise.shortName}
+                  {state.config.enableRetentionAndRTM
+                    ? ` • ${prevTeam.rtmCardsRemaining} RTM`
+                    : ''}
+                </span>
+              )}
             </div>
 
             <div>

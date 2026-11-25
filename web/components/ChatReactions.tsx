@@ -17,10 +17,13 @@ export default function ChatReactions({
   onSendReaction,
 }: ChatReactionsProps) {
   const [text, setText] = useState('');
-  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const listRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const el = listRef.current;
+    if (el) {
+      el.scrollTop = el.scrollHeight;
+    }
   }, [messages.length]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -31,7 +34,7 @@ export default function ChatReactions({
   };
 
   return (
-    <div className="flex h-64 flex-col rounded-2xl border border-slate-800 bg-slate-900/80 p-3.5 md:h-56 lg:h-full">
+    <div className="flex h-64 flex-col rounded-2xl border border-slate-800 bg-slate-900/80 p-3.5 md:h-56 lg:h-[calc(100dvh-6rem)] lg:max-h-[680px]">
       <div className="mb-2 flex items-center justify-between">
         <h3 className="text-xs font-bold tracking-wider text-slate-400 uppercase">
           Live Room Feed
@@ -49,7 +52,10 @@ export default function ChatReactions({
         </div>
       </div>
 
-      <div className="flex-1 space-y-2 overflow-y-auto pr-1 text-xs">
+      <div
+        ref={listRef}
+        className="flex-1 space-y-2 overflow-y-auto pr-1 text-xs"
+      >
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -68,7 +74,6 @@ export default function ChatReactions({
             <span>{msg.text}</span>
           </div>
         ))}
-        <div ref={bottomRef} />
       </div>
 
       <form onSubmit={handleSubmit} className="mt-2 flex gap-2">
