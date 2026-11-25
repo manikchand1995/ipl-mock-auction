@@ -203,9 +203,9 @@ export default function RoomPage() {
   };
 
   return (
-    <div className="relative min-h-screen pb-10">
+    <div className="relative min-h-dvh pb-6">
       {/* Top Bar */}
-      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-800/80 bg-[#070b14]/90 px-4 py-2.5 backdrop-blur-md">
+      <header className="safe-x sticky top-0 z-30 flex items-center justify-between border-b border-slate-800/80 bg-[#070b14]/90 py-2 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <button
             onClick={handleExitRoom}
@@ -288,12 +288,12 @@ export default function RoomPage() {
         state.phase === 'SOLD_REVEAL' ||
         state.phase === 'UNSOLD_REVEAL' ||
         state.phase === 'PAUSED') && (
-        <div className="mx-auto grid max-w-[1440px] gap-4 p-4 lg:grid-cols-12">
-          <div className="lg:col-span-3">
+        <div className="safe-x mx-auto grid max-w-[1440px] gap-3 py-3 md:grid-cols-12 md:gap-4 md:py-4">
+          <div className="order-2 md:order-1 md:col-span-5 lg:col-span-3">
             <FranchiseSidebar state={state} playerToken={playerToken} />
           </div>
 
-          <div className="lg:col-span-6">
+          <div className="order-1 md:order-2 md:col-span-7 lg:col-span-6">
             <BroadcastStage
               state={state}
               playerToken={playerToken}
@@ -323,7 +323,7 @@ export default function RoomPage() {
             />
           </div>
 
-          <div className="lg:col-span-3">
+          <div className="order-3 md:col-span-12 lg:col-span-3">
             <ChatReactions
               messages={state.chatMessages}
               onSendChat={(text) => socket.emit('sendChat', { text })}

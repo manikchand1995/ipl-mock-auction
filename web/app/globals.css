@@ -33,3 +33,15 @@
 .animate-gavel-stamp {
   animation: gavelStamp 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+.safe-x {
+  padding-left: max(0.75rem, env(safe-area-inset-left));
+  padding-right: max(0.75rem, env(safe-area-inset-right));
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .landscape-scroll-panel {
+    max-height: calc(100dvh - 4.25rem);
+    overflow-y: auto;
+  }
+}

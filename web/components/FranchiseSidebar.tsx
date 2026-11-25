@@ -16,7 +16,7 @@ export default function FranchiseSidebar({
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
-    <div className="flex flex-col gap-2.5 rounded-2xl border border-slate-800 bg-slate-900/80 p-3.5">
+    <div className="landscape-scroll-panel flex flex-col gap-2.5 rounded-2xl border border-slate-800 bg-slate-900/80 p-3.5">
       <div className="flex items-center justify-between px-1">
         <h3 className="text-xs font-bold tracking-wider text-slate-400 uppercase">
           Franchise Purses &amp; Squads

@@ -739,8 +739,8 @@ export default function SeasonCenter({
 
       {/* MATCH SCORECARD MODAL */}
       {selectedMatch && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 p-4 backdrop-blur-sm">
-          <div className="flex max-h-[90vh] w-full max-w-4xl flex-col rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 p-2 backdrop-blur-sm sm:p-4">
+          <div className="flex max-h-[92dvh] w-full max-w-4xl flex-col rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-800 px-5 py-4">
               <div>
                 <div className="text-xs font-bold text-amber-300 uppercase">

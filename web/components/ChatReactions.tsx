@@ -31,7 +31,7 @@ export default function ChatReactions({
   };
 
   return (
-    <div className="flex h-80 flex-col rounded-2xl border border-slate-800 bg-slate-900/80 p-3.5 lg:h-full">
+    <div className="flex h-64 flex-col rounded-2xl border border-slate-800 bg-slate-900/80 p-3.5 md:h-56 lg:h-full">
       <div className="mb-2 flex items-center justify-between">
         <h3 className="text-xs font-bold tracking-wider text-slate-400 uppercase">
           Live Room Feed
