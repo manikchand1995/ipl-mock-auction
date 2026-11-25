@@ -1,6 +1,6 @@
 'use client';
 
-import { Shield, TrendingUp, X } from 'lucide-react';
+import { BarChart3, Shield, TrendingUp, X } from 'lucide-react';
 import playersData from '@shared/data/players.json';
 import { formatINR, PLAYING_ROLE_LABELS } from '@shared/rules';
 import { Player, PublicRoomState } from '@shared/types';
@@ -115,6 +115,101 @@ export default function PlayerStatsModal({
               <div className="mt-0.5 font-semibold text-emerald-400">
                 {acquired ? acquired.acquiredVia : '—'}
               </div>
+            </div>
+          </div>
+
+          {/* Career Stats (IPL/T20, List A, First-Class) */}
+          <div className="space-y-2.5 rounded-2xl border border-slate-800 bg-slate-950/40 p-4">
+            <div className="flex items-center gap-2 text-xs font-bold tracking-wider text-slate-300 uppercase">
+              <BarChart3 className="h-4 w-4 text-sky-400" />
+              Career Stats (Outside This Season)
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="border-b border-slate-800 text-[11px] text-slate-400 uppercase">
+                  <tr>
+                    <th className="py-1.5 pr-2">Format</th>
+                    <th className="px-2 py-1.5 text-right">Mat</th>
+                    <th className="px-2 py-1.5 text-right">Runs</th>
+                    <th className="px-2 py-1.5 text-right">Avg / SR</th>
+                    <th className="px-2 py-1.5 text-right">Wkts</th>
+                    <th className="py-1.5 pl-2 text-right">Econ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    {
+                      label: 'IPL / T20',
+                      matches: player.stats.matches,
+                      runs: player.stats.runs,
+                      avgOrSr:
+                        player.stats.strikeRate !== undefined
+                          ? `SR ${player.stats.strikeRate.toFixed(1)}`
+                          : '-',
+                      wickets: player.stats.wickets,
+                      economy: player.stats.economy,
+                    },
+                    ...(player.stats.listA
+                      ? [
+                          {
+                            label: 'List A',
+                            matches: player.stats.listA.matches,
+                            runs: player.stats.listA.runs,
+                            avgOrSr:
+                              player.stats.listA.average !== undefined
+                                ? `Avg ${player.stats.listA.average.toFixed(1)}`
+                                : player.stats.listA.strikeRate !== undefined
+                                  ? `SR ${player.stats.listA.strikeRate.toFixed(1)}`
+                                  : '-',
+                            wickets: player.stats.listA.wickets,
+                            economy: player.stats.listA.economy,
+                          },
+                        ]
+                      : []),
+                    ...(player.stats.fc
+                      ? [
+                          {
+                            label: 'First-Class',
+                            matches: player.stats.fc.matches,
+                            runs: player.stats.fc.runs,
+                            avgOrSr:
+                              player.stats.fc.average !== undefined
+                                ? `Avg ${player.stats.fc.average.toFixed(1)}`
+                                : player.stats.fc.strikeRate !== undefined
+                                  ? `SR ${player.stats.fc.strikeRate.toFixed(1)}`
+                                  : '-',
+                            wickets: player.stats.fc.wickets,
+                            economy: player.stats.fc.economy,
+                          },
+                        ]
+                      : []),
+                  ].map((row) => (
+                    <tr
+                      key={row.label}
+                      className="border-b border-slate-800/50 last:border-b-0"
+                    >
+                      <td className="py-1.5 pr-2 font-semibold text-white">
+                        {row.label}
+                      </td>
+                      <td className="px-2 py-1.5 text-right font-mono text-slate-300">
+                        {row.matches}
+                      </td>
+                      <td className="px-2 py-1.5 text-right font-mono font-bold text-amber-300">
+                        {row.runs !== undefined ? row.runs.toLocaleString() : '-'}
+                      </td>
+                      <td className="px-2 py-1.5 text-right font-mono text-slate-300">
+                        {row.avgOrSr}
+                      </td>
+                      <td className="px-2 py-1.5 text-right font-mono font-bold text-emerald-400">
+                        {row.wickets !== undefined ? row.wickets : '-'}
+                      </td>
+                      <td className="py-1.5 pl-2 text-right font-mono text-slate-300">
+                        {row.economy !== undefined ? row.economy.toFixed(2) : '-'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
 
