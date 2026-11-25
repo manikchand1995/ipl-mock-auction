@@ -124,8 +124,14 @@ test('simulateIPLSeason generates timetable, scorecards, and player/team stats',
   const teams: Record<string, TeamState> = {};
   const grades: Record<string, TeamGrade> = {};
 
+  const indianPool = pool.filter((p) => !p.isOverseas);
+  const overseasPool = pool.filter((p) => p.isOverseas);
+
   IPL_FRANCHISES.forEach((f, idx) => {
-    const slice = pool.slice(idx * 18, idx * 18 + 18).map((p) => ({
+    const slice = [
+      ...indianPool.slice(idx * 12, idx * 12 + 12),
+      ...overseasPool.slice(idx * 6, idx * 6 + 6),
+    ].map((p) => ({
       player: p,
       priceLakhs: 100,
       acquiredVia: 'AUCTION' as const,
@@ -150,6 +156,10 @@ test('simulateIPLSeason generates timetable, scorecards, and player/team stats',
   assert.ok(season.matches[0].innings1.battingImpactSub);
   assert.ok(season.matches[0].innings2.bowlingImpactSub);
   assert.ok(season.matches[0].tossSummary?.includes('won the toss'));
+  assert.ok(
+    season.matches.some((m) => m.innings1.bowlers.length === 6 || m.innings2.bowlers.length === 6),
+    'Expected at least some innings to use 6 bowlers including all-rounders'
+  );
 });
 
 test('playingRole places openers before top-order batters like Suryakumar Yadav', () => {

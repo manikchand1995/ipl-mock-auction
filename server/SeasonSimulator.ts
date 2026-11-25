@@ -170,31 +170,76 @@ function buildInningsScorecard(
   const extras = Math.min(12, Math.max(3, Math.round(targetTotalRuns * 0.04)));
   const runsToDistribute = Math.max(20, targetTotalRuns - extras);
 
-  // Pick 5 bowlers (preferring BOWL and AR from bowlingXI)
-  const specialistBowlers = bowlersXI.filter(
-    (p) => p.player.role === 'BOWL' || p.player.role === 'AR'
-  );
+  // Pick 5-8 bowlers (6 is most common; 5 and 7 are rare; 8 is rarest-rare if 8+ options & getting hit)
+  const specialistBowlers = bowlersXI
+    .filter((p) => p.player.role === 'BOWL' || p.player.role === 'AR')
+    .sort((a, b) => b.player.ratings.bowling - a.player.ratings.bowling);
+  let targetBowlerCount = 5;
+  if (specialistBowlers.length >= 8 && targetTotalRuns >= 205 && Math.random() < 0.05) {
+    targetBowlerCount = 8;
+  } else if (specialistBowlers.length >= 7) {
+    const r = Math.random();
+    targetBowlerCount = r < 0.7 ? 6 : r < 0.85 ? 5 : 7;
+  } else if (specialistBowlers.length === 6) {
+    targetBowlerCount = Math.random() < 0.82 ? 6 : 5;
+  }
   const selectedBowlers = (
-    specialistBowlers.length >= 5
-      ? specialistBowlers.slice(0, 5)
+    specialistBowlers.length >= targetBowlerCount
+      ? specialistBowlers.slice(0, targetBowlerCount)
       : [
           ...specialistBowlers,
           ...bowlersXI.filter((p) => !specialistBowlers.includes(p)),
-        ].slice(0, 5)
-  ).slice(0, Math.max(1, Math.min(5, bowlersXI.length)));
+        ].slice(0, targetBowlerCount)
+  ).slice(0, Math.max(1, Math.min(targetBowlerCount, bowlersXI.length)));
 
-  // Distribute overs across 5 bowlers (4 overs each for full 20 overs)
+  // Distribute overs across selected bowlers (max 4 overs each)
   const oversInt = Math.floor(totalBalls / 6);
   const remBalls = totalBalls % 6;
-  const bowlerOvers = selectedBowlers.map((_, idx) => {
-    if (oversInt >= 20) return 4;
-    const base = Math.floor(oversInt / selectedBowlers.length);
-    return base + (idx < oversInt % selectedBowlers.length ? 1 : 0);
-  });
+  const nBowl = selectedBowlers.length;
+  const bowlerOvers = new Array(nBowl).fill(0);
+  if (nBowl === 8 && oversInt === 20) {
+    const pattern = [4, 3, 3, 3, 2, 2, 2, 1];
+    for (let i = 0; i < 8; i++) bowlerOvers[i] = pattern[i];
+  } else if (nBowl === 8 && oversInt === 19) {
+    const pattern = [4, 3, 3, 2, 2, 2, 2, 1];
+    for (let i = 0; i < 8; i++) bowlerOvers[i] = pattern[i];
+  } else if (nBowl === 7 && oversInt === 20) {
+    const pattern = Math.random() < 0.5 ? [4, 4, 3, 3, 2, 2, 2] : [4, 4, 4, 3, 2, 2, 1];
+    for (let i = 0; i < 7; i++) bowlerOvers[i] = pattern[i];
+  } else if (nBowl === 7 && oversInt === 19) {
+    const pattern = [4, 4, 3, 3, 2, 2, 1];
+    for (let i = 0; i < 7; i++) bowlerOvers[i] = pattern[i];
+  } else if (nBowl === 6 && oversInt === 20) {
+    const pattern = Math.random() < 0.5 ? [4, 4, 4, 3, 3, 2] : [4, 4, 4, 4, 2, 2];
+    for (let i = 0; i < 6; i++) bowlerOvers[i] = pattern[i];
+  } else if (nBowl === 6 && oversInt === 19) {
+    const pattern = [4, 4, 4, 3, 2, 2];
+    for (let i = 0; i < 6; i++) bowlerOvers[i] = pattern[i];
+  } else {
+    let rem = oversInt;
+    // Give each bowler 1 over first if possible
+    for (let i = 0; i < nBowl && rem > 0; i++) {
+      bowlerOvers[i] = 1;
+      rem--;
+    }
+    // Top up front-line bowlers up to 4 overs (leaving room for remBalls on last bowler)
+    let idx = 0;
+    while (rem > 0) {
+      const cap = idx === nBowl - 1 && remBalls > 0 ? 3 : 4;
+      if (bowlerOvers[idx] < cap) {
+        bowlerOvers[idx]++;
+        rem--;
+      }
+      idx = (idx + 1) % nBowl;
+      if (idx === 0 && bowlerOvers.every((o, i) => o >= (i === nBowl - 1 && remBalls > 0 ? 3 : 4))) {
+        break;
+      }
+    }
+  }
 
-  // Distribute wickets among bowlers weighted by bowling rating
-  const bowlerWeights = selectedBowlers.map((b) =>
-    Math.max(20, b.player.ratings.bowling)
+  // Distribute wickets among bowlers weighted by overs bowled * bowling rating
+  const bowlerWeights = selectedBowlers.map(
+    (b, idx) => Math.max(1, bowlerOvers[idx]) * Math.max(20, b.player.ratings.bowling)
   );
   const bowlerWickets = new Array(selectedBowlers.length).fill(0);
   for (let w = 0; w < targetWickets; w++) {
@@ -454,24 +499,33 @@ function simulateMatch(
       );
       if (replaceable.length === 0) continue;
 
-      // Replace a pure batter (when subbing in a bowler) or pure bowler (when subbing in a batter)
+      // Replace a pure batter (when subbing in a bowler) or a bowler who actually bowled (when subbing in a batter)
+      const likelyBowlerIds = new Set(
+        xi
+          .filter((p) => p.player.role === 'BOWL' || p.player.role === 'AR')
+          .sort((a, b) => b.player.ratings.bowling - a.player.ratings.bowling)
+          .slice(0, 5)
+          .map((p) => p.player.id)
+      );
       const outSorted = [...replaceable].sort((a, b) => {
-        const aPref =
-          preferRole === 'BOWL'
-            ? a.player.role === 'BAT' || a.player.role === 'WK'
+        if (preferRole === 'BAT') {
+          const aBowledPure =
+            likelyBowlerIds.has(a.player.id) && a.player.role === 'BOWL'
               ? 0
-              : 1
-            : a.player.role === 'BOWL'
+              : likelyBowlerIds.has(a.player.id)
+                ? 1
+                : 2;
+          const bBowledPure =
+            likelyBowlerIds.has(b.player.id) && b.player.role === 'BOWL'
               ? 0
-              : 1;
-        const bPref =
-          preferRole === 'BOWL'
-            ? b.player.role === 'BAT' || b.player.role === 'WK'
-              ? 0
-              : 1
-            : b.player.role === 'BOWL'
-              ? 0
-              : 1;
+              : likelyBowlerIds.has(b.player.id)
+                ? 1
+                : 2;
+          if (aBowledPure !== bBowledPure) return aBowledPure - bBowledPure;
+          return a.player.ratings.batting - b.player.ratings.batting;
+        }
+        const aPref = a.player.role === 'BAT' || a.player.role === 'WK' ? 0 : 1;
+        const bPref = b.player.role === 'BAT' || b.player.role === 'WK' ? 0 : 1;
         if (aPref !== bPref) return aPref - bPref;
         return a.player.ratings.overall - b.player.ratings.overall;
       });

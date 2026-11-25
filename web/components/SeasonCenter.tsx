@@ -150,6 +150,26 @@ function InningsTable({
             ))}
           </div>
         )}
+        {innings.battingImpactSub && (
+          <div className="rounded-lg border border-slate-800/80 bg-slate-900/40 px-2.5 py-1.5">
+            <span className="font-semibold text-slate-300">Impact Sub: </span>
+            <button
+              type="button"
+              onClick={() => onSelectPlayer?.(innings.battingImpactSub!.inPlayerId)}
+              className="font-semibold text-emerald-400 transition hover:underline"
+            >
+              ▲ {innings.battingImpactSub.inPlayerName}
+            </button>{' '}
+            <span>replaced</span>{' '}
+            <button
+              type="button"
+              onClick={() => onSelectPlayer?.(innings.battingImpactSub!.outPlayerId)}
+              className="font-semibold text-rose-400 transition hover:underline"
+            >
+              ▼ {innings.battingImpactSub.outPlayerName}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Bowling */}
