@@ -119,32 +119,75 @@ export function gradeTeamSquad(team: TeamState): TeamGrade {
   // Compute sub-scores from XI
   const batters = playingXI.filter((p) => ['BAT', 'WK', 'AR'].includes(p.player.role));
   const bowlers = playingXI.filter((p) => ['BOWL', 'AR'].includes(p.player.role));
+  const xiIds = new Set(playingXI.map((p) => p.player.id));
+  const reserves = team.squad.filter((p) => !xiIds.has(p.player.id));
 
+  const topSixBat = [...batters]
+    .sort((a, b) => b.player.ratings.batting - a.player.ratings.batting)
+    .slice(0, 6);
+  const avgTopBat =
+    topSixBat.length > 0
+      ? topSixBat.reduce((sum, p) => sum + p.player.ratings.batting, 0) / topSixBat.length
+      : 40;
   const avgBatting =
     batters.length > 0
       ? batters.reduce((sum, p) => sum + p.player.ratings.batting, 0) / batters.length
+      : 40;
+  const reserveBatAvg =
+    reserves.length > 0
+      ? [...reserves]
+          .sort((a, b) => b.player.ratings.batting - a.player.ratings.batting)
+          .slice(0, 3)
+          .reduce((sum, p) => sum + p.player.ratings.batting, 0) /
+        Math.min(3, reserves.length)
+      : avgBatting * 0.75;
+
+  const topFiveBowl = [...bowlers]
+    .sort((a, b) => b.player.ratings.bowling - a.player.ratings.bowling)
+    .slice(0, 5);
+  const avgTopBowl =
+    topFiveBowl.length > 0
+      ? topFiveBowl.reduce((sum, p) => sum + p.player.ratings.bowling, 0) / topFiveBowl.length
       : 40;
   const avgBowling =
     bowlers.length > 0
       ? bowlers.reduce((sum, p) => sum + p.player.ratings.bowling, 0) / bowlers.length
       : 40;
+  const reserveBowlAvg =
+    reserves.length > 0
+      ? [...reserves]
+          .sort((a, b) => b.player.ratings.bowling - a.player.ratings.bowling)
+          .slice(0, 3)
+          .reduce((sum, p) => sum + p.player.ratings.bowling, 0) /
+        Math.min(3, reserves.length)
+      : avgBowling * 0.75;
+
+  const avgFielding =
+    playingXI.length > 0
+      ? playingXI.reduce((sum, p) => sum + p.player.ratings.fielding, 0) / playingXI.length
+      : 70;
 
   const wkCount = playingXI.filter((p) => p.player.role === 'WK').length;
+  const squadWkCount = team.squad.filter((p) => p.player.role === 'WK').length;
   const arCount = playingXI.filter((p) => p.player.role === 'AR').length;
   const bowlCount = bowlers.length;
 
-  let balanceScore = 60;
-  if (wkCount >= 1) balanceScore += 10;
-  if (bowlCount >= 5) balanceScore += 15;
-  else if (bowlCount === 4) balanceScore += 8;
-  if (arCount >= 2) balanceScore += 10;
-  if (playingXI.length === 11) balanceScore += 5;
-  balanceScore = Math.min(100, balanceScore);
+  let balanceRaw = 42;
+  if (wkCount >= 1) balanceRaw += 9;
+  if (squadWkCount >= 2) balanceRaw += 3;
+  balanceRaw += Math.min(18, bowlCount * 3);
+  balanceRaw += Math.min(12, arCount * 4);
+  balanceRaw += Math.min(8, Math.max(0, team.squad.length - 16));
+  balanceRaw += (avgFielding / 100) * 8;
+  if (playingXI.length === 11) balanceRaw += 4;
+  const balanceScore = Math.round(Math.min(100, balanceRaw));
 
-  const battingScore = Math.round(Math.min(100, avgBatting));
-  const bowlingScore = Math.round(Math.min(100, avgBowling));
+  const battingRaw = avgTopBat * 0.65 + avgBatting * 0.25 + reserveBatAvg * 0.1;
+  const bowlingRaw = avgTopBowl * 0.7 + avgBowling * 0.2 + reserveBowlAvg * 0.1;
+  const battingScore = Math.round(Math.min(100, battingRaw));
+  const bowlingScore = Math.round(Math.min(100, bowlingRaw));
 
-  // Home ground fit score based on pitchType
+  // Home ground fit score based on pitchType (continuous so teams don't tie at 100)
   const pitch = team.franchise.homeGround.pitchType;
   const isSpinner = (b: string) => {
     const s = b.toLowerCase();
@@ -161,30 +204,41 @@ export function gradeTeamSquad(team: TeamState): TeamGrade {
   const xiPacers = playingXI.filter(
     (p) => isPacer(p.player.bowlingStyle) && p.player.ratings.bowling >= 70
   );
+  const avgSpinQuality =
+    xiSpinners.length > 0
+      ? xiSpinners.reduce((s, p) => s + p.player.ratings.bowling, 0) / xiSpinners.length
+      : 60;
+  const avgPaceQuality =
+    xiPacers.length > 0
+      ? xiPacers.reduce((s, p) => s + p.player.ratings.bowling, 0) / xiPacers.length
+      : 60;
 
-  let homeAdvantageScore = 65;
+  let homeRaw = 52;
   if (pitch === 'SPIN_FRIENDLY') {
-    homeAdvantageScore += Math.min(25, xiSpinners.length * 10);
-    if (avgBatting >= 80) homeAdvantageScore += 10;
+    homeRaw += Math.min(20, xiSpinners.length * 7.5);
+    homeRaw += (avgSpinQuality / 100) * 14;
+    homeRaw += (avgBatting / 100) * 12;
   } else if (pitch === 'PACE_BOUNCE') {
-    homeAdvantageScore += Math.min(25, xiPacers.length * 9);
-    if (avgBatting >= 80) homeAdvantageScore += 10;
+    homeRaw += Math.min(20, xiPacers.length * 6.8);
+    homeRaw += (avgPaceQuality / 100) * 14;
+    homeRaw += (avgBatting / 100) * 12;
   } else if (pitch === 'BATTING_PARADISE') {
-    homeAdvantageScore += battingScore >= 86 ? 22 : battingScore >= 80 ? 14 : 5;
-    if (xiPacers.length >= 2) homeAdvantageScore += 13;
+    homeRaw += (battingRaw / 100) * 26;
+    homeRaw += Math.min(12, xiPacers.length * 4);
+    homeRaw += (avgFielding / 100) * 8;
   } else {
     // BALANCED
-    if (xiSpinners.length >= 2 && xiPacers.length >= 2) homeAdvantageScore += 22;
-    else if (xiSpinners.length >= 1 && xiPacers.length >= 2) homeAdvantageScore += 14;
-    if (arCount >= 2) homeAdvantageScore += 13;
+    homeRaw += Math.min(12, xiSpinners.length * 5) + Math.min(12, xiPacers.length * 4);
+    homeRaw += Math.min(10, arCount * 3.5);
+    homeRaw += ((avgBatting + avgBowling) / 200) * 12;
   }
-  homeAdvantageScore = Math.round(Math.min(100, homeAdvantageScore));
+  const homeAdvantageScore = Math.round(Math.min(100, homeRaw));
 
   const overallScore = Math.round(
-    battingScore * 0.30 +
-      bowlingScore * 0.30 +
-      balanceScore * 0.25 +
-      homeAdvantageScore * 0.15
+    battingRaw * 0.30 +
+      bowlingRaw * 0.30 +
+      balanceRaw * 0.25 +
+      homeRaw * 0.15
   );
 
   const strengths: string[] = [];
