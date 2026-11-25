@@ -672,6 +672,8 @@ export class AuctionEngine {
 
     const team = this.teams[teamId];
     const player = this.currentLot.player;
+    this.currentLot.highestBidderTeamId = teamId;
+    this.currentLot.currentBidLakhs = priceLakhs;
     team.remainingPurseLakhs -= priceLakhs;
     team.squad.push({
       player,

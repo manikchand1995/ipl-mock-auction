@@ -165,7 +165,8 @@ function buildInningsScorecard(
   targetTotalRuns: number,
   targetWickets: number,
   oversStr: string,
-  totalBalls: number
+  totalBalls: number,
+  requiredBowlerId?: string
 ): InningsScorecard {
   const extras = Math.min(12, Math.max(3, Math.round(targetTotalRuns * 0.04)));
   const runsToDistribute = Math.max(20, targetTotalRuns - extras);
@@ -191,6 +192,17 @@ function buildInningsScorecard(
           ...bowlersXI.filter((p) => !specialistBowlers.includes(p)),
         ].slice(0, targetBowlerCount)
   ).slice(0, Math.max(1, Math.min(targetBowlerCount, bowlersXI.length)));
+
+  if (
+    requiredBowlerId &&
+    selectedBowlers.length > 0 &&
+    !selectedBowlers.some((b) => b.player.id === requiredBowlerId)
+  ) {
+    const req = bowlersXI.find((b) => b.player.id === requiredBowlerId);
+    if (req) {
+      selectedBowlers[selectedBowlers.length - 1] = req;
+    }
+  }
 
   // Distribute overs across selected bowlers (max 4 overs each)
   const oversInt = Math.floor(totalBalls / 6);
@@ -531,9 +543,28 @@ function simulateMatch(
       });
 
       const outPlayer = outSorted[0];
-      const updatedXI = xi.map((p) =>
+      let updatedXI = xi.map((p) =>
         p.player.id === outPlayer.player.id ? inPlayer : p
       );
+      if (preferRole === 'BAT') {
+        // Place the incoming batter at a natural batting-order slot instead of #10/#11
+        const batOrderScore = (p: AcquiredPlayer) => {
+          const r = p.player.playingRole;
+          if (r === 'OPENER') return 1;
+          if (r === 'TOP_ORDER') return 2;
+          if (r === 'MIDDLE_ORDER') return 3;
+          if (r === 'FINISHER') return 4;
+          if (r === 'PACE_AR' || r === 'SPIN_AR') return 5;
+          if (p.player.role === 'BAT' || p.player.role === 'WK') return 3;
+          if (p.player.role === 'AR') return 5;
+          return 6;
+        };
+        updatedXI = [...updatedXI].sort((a, b) => {
+          const diff = batOrderScore(a) - batOrderScore(b);
+          if (diff !== 0) return diff;
+          return b.player.ratings.batting - a.player.ratings.batting;
+        });
+      }
       return {
         updatedXI,
         info: {
@@ -561,8 +592,11 @@ function simulateMatch(
   const batFirstXI = homeBatsFirst ? homeXI : awayXI;
   const chaseXI = homeBatsFirst ? awayXI : homeXI;
 
-  const batFirstImpact = pickImpactSub(batFirstTeam, batFirstXI, 'BOWL');
-  const chaseImpact = pickImpactSub(chaseTeam, chaseXI, 'BAT');
+  // Very rare (~5%) chance a team opts not to use an Impact Sub
+  const batFirstImpact =
+    Math.random() < 0.95 ? pickImpactSub(batFirstTeam, batFirstXI, 'BOWL') : null;
+  const chaseImpact =
+    Math.random() < 0.95 ? pickImpactSub(chaseTeam, chaseXI, 'BAT') : null;
   const batFirstXIForBowl = batFirstImpact ? batFirstImpact.updatedXI : batFirstXI;
   const chaseXIForBat = chaseImpact ? chaseImpact.updatedXI : chaseXI;
 
@@ -634,9 +668,14 @@ function simulateMatch(
     chaseRuns,
     chaseWickets,
     chaseOversStr,
-    chaseTotalBalls
+    chaseTotalBalls,
+    batFirstImpact?.info.inPlayerId
   );
-  if (chaseImpact) innings2.battingImpactSub = chaseImpact.info;
+  if (chaseImpact && innings2.batters.some((b) => b.playerId === chaseImpact.info.inPlayerId)) {
+    innings2.battingImpactSub = chaseImpact.info;
+  } else {
+    delete innings1.bowlingImpactSub;
+  }
   if (batFirstImpact) innings2.bowlingImpactSub = batFirstImpact.info;
 
   updateFormAfterInnings(innings1, formMap);

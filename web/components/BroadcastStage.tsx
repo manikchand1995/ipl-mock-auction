@@ -252,7 +252,11 @@ export default function BroadcastStage({
                   : 'border-rose-400 bg-rose-500/20 text-rose-300'
               }`}
             >
-              {state.phase === 'SOLD_REVEAL' ? 'SOLD!' : 'UNSOLD'}
+              {state.phase === 'SOLD_REVEAL'
+                ? lot.rtmEligibleTeamId === lot.highestBidderTeamId
+                  ? 'SOLD (RTM)!'
+                  : 'SOLD!'
+                : 'UNSOLD'}
             </div>
             {state.phase === 'SOLD_REVEAL' && highestTeam && (
               <p className="mt-4 text-lg font-bold text-white">

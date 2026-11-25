@@ -153,9 +153,19 @@ test('simulateIPLSeason generates timetable, scorecards, and player/team stats',
       (season.matches[0].innings1.yetToBat?.length ?? 0),
     11
   );
-  assert.ok(season.matches[0].innings1.battingImpactSub);
-  assert.ok(season.matches[0].innings2.bowlingImpactSub);
+  assert.ok(season.matches.some((m) => m.innings1.battingImpactSub));
+  assert.ok(season.matches.some((m) => m.innings2.bowlingImpactSub));
   assert.ok(season.matches[0].tossSummary?.includes('won the toss'));
+  assert.ok(
+    season.matches.every((m) => {
+      const batSub = m.innings2.battingImpactSub;
+      const bowlSub = m.innings2.bowlingImpactSub;
+      const batOk = !batSub || m.innings2.batters.some((b) => b.playerId === batSub.inPlayerId);
+      const bowlOk = !bowlSub || m.innings2.bowlers.some((bw) => bw.playerId === bowlSub.inPlayerId);
+      return batOk && bowlOk;
+    }),
+    'Every Impact Sub shown on a scorecard must have actually batted or bowled'
+  );
   assert.ok(
     season.matches.some((m) => m.innings1.bowlers.length === 6 || m.innings2.bowlers.length === 6),
     'Expected at least some innings to use 6 bowlers including all-rounders'
@@ -315,4 +325,36 @@ test('auction opening lot is shuffled across unretained stars rather than always
     firstPlayers.size >= 3,
     `Expected varied first lots across 12 runs, got only: ${[...firstPlayers].join(', ')}`
   );
+});
+
+test('resolveRTMDecision updates currentLot.highestBidderTeamId to the RTM team', () => {
+  const pool = playersData as Player[];
+  const kohli = pool.find((p) => p.id === 'p001')!; // previousTeamId: 'rcb'
+  const engine = new AuctionEngine(
+    'RTM001',
+    'host-tok',
+    { ...DEFAULT_ROOM_CONFIG, enableRetentionAndRTM: true },
+    { onStateChange: () => {}, onReaction: () => {} }
+  );
+  engine.assignHumanToTeam('rcb', 'host-tok', 'Host');
+  engine.phase = 'RTM_DECISION';
+  engine.currentLot = {
+    player: kohli,
+    currentBidLakhs: 1400,
+    highestBidderTeamId: 'mi',
+    bidHistory: [],
+    isAccelerated: false,
+    rtmEligibleTeamId: 'rcb',
+    rtmFinalOfferLakhs: 1400,
+  };
+
+  const err = engine.resolveRTMDecision(true, 'rcb');
+  const state = engine.getPublicState();
+  engine.destroy();
+
+  assert.equal(err, null);
+  assert.equal(state.phase, 'SOLD_REVEAL');
+  assert.equal(state.currentLot?.highestBidderTeamId, 'rcb');
+  assert.equal(state.currentLot?.currentBidLakhs, 1400);
+  assert.equal(state.teams['rcb'].squad[0]?.acquiredVia, 'RTM');
 });
