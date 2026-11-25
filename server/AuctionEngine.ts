@@ -812,6 +812,7 @@ export class AuctionEngine {
       grades[teamId] = g;
       team.captainId = g.captainId ?? null;
       team.viceCaptainId = g.viceCaptainId ?? null;
+      team.wicketkeeperId = g.wicketkeeperId ?? null;
     }
     this.grades = grades;
     this.addSystemMessage('Auction COMPLETED! Check out the squad grades & Playing XIs.');
@@ -821,7 +822,8 @@ export class AuctionEngine {
   public setLeadership(
     teamId: string,
     captainId?: string | null,
-    viceCaptainId?: string | null
+    viceCaptainId?: string | null,
+    wicketkeeperId?: string | null
   ): string | null {
     if (this.phase !== 'COMPLETED') return 'Leadership can only be edited post-auction';
     const team = this.teams[teamId];
@@ -829,11 +831,16 @@ export class AuctionEngine {
 
     const nextCap = captainId !== undefined ? captainId : team.captainId ?? null;
     const nextVc = viceCaptainId !== undefined ? viceCaptainId : team.viceCaptainId ?? null;
+    const nextWk =
+      wicketkeeperId !== undefined ? wicketkeeperId : team.wicketkeeperId ?? null;
     if (nextCap && !team.squad.some((s) => s.player.id === nextCap)) {
       return 'Captain must be in squad';
     }
     if (nextVc && !team.squad.some((s) => s.player.id === nextVc)) {
       return 'Vice-Captain must be in squad';
+    }
+    if (nextWk && !team.squad.some((s) => s.player.id === nextWk)) {
+      return 'Wicketkeeper must be in squad';
     }
     if (nextCap && nextVc && nextCap === nextVc) {
       return 'Captain and Vice-Captain must be different players';
@@ -841,6 +848,7 @@ export class AuctionEngine {
 
     team.captainId = nextCap;
     team.viceCaptainId = nextVc;
+    team.wicketkeeperId = nextWk;
     if (this.grades) {
       this.grades[teamId] = gradeTeamSquad(team);
     }

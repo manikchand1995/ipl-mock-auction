@@ -106,6 +106,7 @@ export interface TeamState {
   squad: AcquiredPlayer[];
   captainId?: string | null;
   viceCaptainId?: string | null;
+  wicketkeeperId?: string | null;
 }
 
 export interface RoomConfig {
@@ -178,6 +179,7 @@ export interface TeamGrade {
   impactPlayer: AcquiredPlayer | null;
   captainId?: string | null;
   viceCaptainId?: string | null;
+  wicketkeeperId?: string | null;
   strengths: string[];
   weaknesses: string[];
   bestValueBuy: AcquiredPlayer | null;

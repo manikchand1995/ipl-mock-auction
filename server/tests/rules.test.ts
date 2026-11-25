@@ -169,6 +169,36 @@ test('simulateIPLSeason generates timetable, scorecards, and player/team stats',
     'Every Impact Sub shown on a scorecard must have actually batted or bowled'
   );
   assert.ok(
+    season.matches.every((m) => {
+      const checkTeamMax4Overseas = (teamId: string, inn1: typeof m.innings1, inn2: typeof m.innings2) => {
+        const squad = teams[teamId].squad;
+        const usedIds = new Set<string>();
+        const collectBat = (inn: typeof m.innings1) => {
+          if (inn.battingTeamId !== teamId) return;
+          inn.batters.forEach((b) => usedIds.add(b.playerId));
+          inn.yetToBat?.forEach((y) => usedIds.add(y.playerId));
+        };
+        const collectBowl = (inn: typeof m.innings1) => {
+          if (inn.bowlingTeamId !== teamId) return;
+          inn.bowlers.forEach((bw) => usedIds.add(bw.playerId));
+        };
+        collectBat(inn1);
+        collectBat(inn2);
+        collectBowl(inn1);
+        collectBowl(inn2);
+        const osCount = [...usedIds].filter(
+          (id) => squad.find((s) => s.player.id === id)?.player.isOverseas
+        ).length;
+        return osCount <= 4;
+      };
+      return (
+        checkTeamMax4Overseas(m.homeTeamId, m.innings1, m.innings2) &&
+        checkTeamMax4Overseas(m.awayTeamId, m.innings1, m.innings2)
+      );
+    }),
+    'Total distinct overseas players used per team per match (XI + Impact Sub) must not exceed 4'
+  );
+  assert.ok(
     season.matches.some((m) => m.innings1.bowlers.length === 6 || m.innings2.bowlers.length === 6),
     'Expected at least some innings to use 6 bowlers including all-rounders'
   );
@@ -396,13 +426,16 @@ test('gradeTeamSquad assigns distinct Captain and Vice-Captain and setLeadership
   const initialGrade = engine.grades?.['csk'];
   assert.ok(initialGrade?.captainId);
   assert.ok(initialGrade?.viceCaptainId);
+  assert.ok(initialGrade?.wicketkeeperId);
   assert.notEqual(initialGrade?.captainId, initialGrade?.viceCaptainId);
 
   const customCap = squad[4].player.id;
   const customVc = squad[5].player.id;
-  const err = engine.setLeadership('csk', customCap, customVc);
+  const customWk = squad[6].player.id;
+  const err = engine.setLeadership('csk', customCap, customVc, customWk);
   assert.equal(err, null);
   assert.equal(engine.teams['csk'].captainId, customCap);
   assert.equal(engine.teams['csk'].viceCaptainId, customVc);
+  assert.equal(engine.teams['csk'].wicketkeeperId, customWk);
   engine.destroy();
 });

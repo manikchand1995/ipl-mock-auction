@@ -13,7 +13,8 @@ interface PostAuctionViewProps {
   onSimulateSeason: () => void;
   onSetLeadership?: (
     captainId: string | null,
-    viceCaptainId: string | null
+    viceCaptainId: string | null,
+    wicketkeeperId?: string | null
   ) => void;
   onPlayAgain: () => void;
 }
@@ -48,21 +49,28 @@ export default function PostAuctionView({
   const captainId = activeTeam?.captainId ?? activeGrade?.captainId ?? null;
   const viceCaptainId =
     activeTeam?.viceCaptainId ?? activeGrade?.viceCaptainId ?? null;
+  const wicketkeeperId =
+    activeTeam?.wicketkeeperId ?? activeGrade?.wicketkeeperId ?? null;
   const captainPlayer = activeTeam?.squad.find(
     (s) => s.player.id === captainId
   )?.player;
   const viceCaptainPlayer = activeTeam?.squad.find(
     (s) => s.player.id === viceCaptainId
   )?.player;
+  const wkPlayer = activeTeam?.squad.find(
+    (s) => s.player.id === wicketkeeperId
+  )?.player;
 
-  const assignRole = (playerId: string, role: 'C' | 'VC') => {
+  const assignRole = (playerId: string, role: 'C' | 'VC' | 'WK') => {
     if (!onSetLeadership || !isMyActiveTeam) return;
     if (role === 'C') {
       const nextVc = viceCaptainId === playerId ? captainId : viceCaptainId;
-      onSetLeadership(playerId, nextVc ?? null);
-    } else {
+      onSetLeadership(playerId, nextVc ?? null, wicketkeeperId);
+    } else if (role === 'VC') {
       const nextCap = captainId === playerId ? viceCaptainId : captainId;
-      onSetLeadership(nextCap ?? null, playerId);
+      onSetLeadership(nextCap ?? null, playerId, wicketkeeperId);
+    } else {
+      onSetLeadership(captainId, viceCaptainId, playerId);
     }
   };
 
@@ -164,10 +172,18 @@ export default function PostAuctionView({
                     {viceCaptainPlayer?.name ?? 'Unassigned'}
                   </strong>
                 </span>
+                <span>
+                  <span className="rounded bg-emerald-400 px-1.5 py-0.5 text-[10px] font-black text-slate-950">
+                    WK
+                  </span>{' '}
+                  <strong className="text-white">
+                    {wkPlayer?.name ?? 'Unassigned'}
+                  </strong>
+                </span>
               </div>
               {isMyActiveTeam && (
                 <span className="text-[11px] text-slate-400">
-                  Click C / VC on any player below to change
+                  Click C / VC / WK on any player below to change
                 </span>
               )}
             </div>
@@ -176,6 +192,7 @@ export default function PostAuctionView({
               {activeGrade.playingXI.map((item, idx) => {
                 const isC = item.player.id === captainId;
                 const isVC = item.player.id === viceCaptainId;
+                const isWK = item.player.id === wicketkeeperId;
                 return (
                 <div
                   key={item.player.id}
@@ -205,6 +222,11 @@ export default function PostAuctionView({
                         {isVC && (
                           <span className="rounded bg-sky-400 px-1.5 py-0.5 text-[10px] font-black text-slate-950">
                             VC
+                          </span>
+                        )}
+                        {isWK && (
+                          <span className="rounded bg-emerald-400 px-1.5 py-0.5 text-[10px] font-black text-slate-950">
+                            WK
                           </span>
                         )}
                       </div>
@@ -242,6 +264,18 @@ export default function PostAuctionView({
                           title="Set as Vice-Captain"
                         >
                           VC
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => assignRole(item.player.id, 'WK')}
+                          className={`rounded px-1.5 py-0.5 text-[10px] font-bold transition ${
+                            isWK
+                              ? 'bg-emerald-400 text-slate-950'
+                              : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                          }`}
+                          title="Set as Wicketkeeper"
+                        >
+                          WK
                         </button>
                       </div>
                     )}

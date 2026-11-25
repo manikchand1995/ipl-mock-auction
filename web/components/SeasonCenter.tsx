@@ -64,17 +64,17 @@ function LeaderBadge({
   team?: TeamState;
 }) {
   if (!team) return null;
-  if (team.captainId === playerId) {
-    return (
-      <span className="ml-1 text-[10px] font-black text-amber-300">(C)</span>
-    );
-  }
-  if (team.viceCaptainId === playerId) {
-    return (
-      <span className="ml-1 text-[10px] font-black text-sky-300">(VC)</span>
-    );
-  }
-  return null;
+  const isC = team.captainId === playerId;
+  const isVC = team.viceCaptainId === playerId;
+  const isWK = team.wicketkeeperId === playerId;
+  if (!isC && !isVC && !isWK) return null;
+  return (
+    <span className="ml-1 inline-flex items-center gap-1 text-[10px] font-black">
+      {isC && <span className="text-amber-300">(C)</span>}
+      {isVC && <span className="text-sky-300">(VC)</span>}
+      {isWK && <span className="text-emerald-300">(WK)</span>}
+    </span>
+  );
 }
 
 function InningsTable({

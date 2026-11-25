@@ -315,6 +315,20 @@ export function gradeTeamSquad(team: TeamState): TeamGrade {
       ? team.viceCaptainId
       : rankedLeaders.find((p) => p.player.id !== captainId)?.player.id ?? null;
 
+  const wkPool = playingXI.filter((p) => p.player.role === 'WK');
+  const squadWkPool = team.squad.filter((p) => p.player.role === 'WK');
+  const bestWk =
+    [...(wkPool.length > 0 ? wkPool : squadWkPool)].sort(
+      (a, b) => b.player.ratings.overall - a.player.ratings.overall
+    )[0] ??
+    [...playingXI].sort(
+      (a, b) => b.player.ratings.fielding - a.player.ratings.fielding
+    )[0];
+  const wicketkeeperId =
+    team.wicketkeeperId && squadIdSet.has(team.wicketkeeperId)
+      ? team.wicketkeeperId
+      : bestWk?.player.id ?? null;
+
   return {
     teamId: team.franchise.id,
     overallScore,
@@ -327,6 +341,7 @@ export function gradeTeamSquad(team: TeamState): TeamGrade {
     impactPlayer,
     captainId,
     viceCaptainId,
+    wicketkeeperId,
     strengths,
     weaknesses,
     bestValueBuy,

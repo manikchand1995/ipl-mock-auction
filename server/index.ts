@@ -262,7 +262,11 @@ io.on('connection', (socket) => {
   socket.on(
     'setLeadership',
     (
-      payload: { captainId?: string | null; viceCaptainId?: string | null },
+      payload: {
+        captainId?: string | null;
+        viceCaptainId?: string | null;
+        wicketkeeperId?: string | null;
+      },
       ack?: (res: { ok: boolean; error?: string }) => void
     ) => {
       const session = roomManager.getSessionBySocket(socket.id);
@@ -275,7 +279,8 @@ io.on('connection', (socket) => {
       const err = engine.setLeadership(
         team.franchise.id,
         payload?.captainId,
-        payload?.viceCaptainId
+        payload?.viceCaptainId,
+        payload?.wicketkeeperId
       );
       ack?.(err ? { ok: false, error: err } : { ok: true });
     }

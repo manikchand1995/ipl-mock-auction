@@ -525,10 +525,10 @@ function simulateMatch(
 
     const sortedBench = [...bench].sort((a, b) => scoreIn(b) - scoreIn(a));
     for (const inPlayer of sortedBench) {
-      const mustReplaceOverseas = inPlayer.player.isOverseas && overseasInXI >= 4;
-      const replaceable = xi.filter((p) =>
-        mustReplaceOverseas ? p.player.isOverseas : true
-      );
+      // Official IPL rule: if starting XI already has 4 overseas players,
+      // an overseas Impact Player CANNOT be used (only Indian Impact Players allowed).
+      if (inPlayer.player.isOverseas && overseasInXI >= 4) continue;
+      const replaceable = xi;
       if (replaceable.length === 0) continue;
 
       // Replace a pure batter (when subbing in a bowler) or a bowler who actually bowled (when subbing in a batter)
