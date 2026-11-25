@@ -82,8 +82,8 @@ io.on('connection', (socket) => {
         payload.displayName,
         socket.id
       );
-      if (!joined) {
-        ack?.({ ok: false, error: 'Room not found' });
+      if (!joined.ok) {
+        ack?.({ ok: false, error: joined.error });
         return;
       }
 

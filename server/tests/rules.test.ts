@@ -12,6 +12,7 @@ import {
 import { Player, TeamGrade, TeamState } from '../../shared/types';
 import { computeAIMaxValuationLakhs } from '../AIBiddingAgent';
 import { AuctionEngine } from '../AuctionEngine';
+import { RoomManager } from '../RoomManager';
 import { simulateIPLSeason } from '../SeasonSimulator';
 import { gradeTeamSquad } from '../SquadGrader';
 
@@ -358,4 +359,18 @@ test('resolveRTMDecision updates currentLot.highestBidderTeamId to the RTM team'
   assert.equal(state.currentLot?.highestBidderTeamId, 'rcb');
   assert.equal(state.currentLot?.currentBidLakhs, 1400);
   assert.equal(state.teams['rcb'].squad[0]?.acquiredVia, 'RTM');
+});
+
+test('RoomManager.joinRoom rejects SINGLE_PLAYER rooms and allows MULTIPLAYER rooms', () => {
+  const rm = new RoomManager({ onStateChange: () => {}, onReaction: () => {} });
+  const sp = rm.createRoom('Solo', { mode: 'SINGLE_PLAYER' }, 'sock-1');
+  const spJoin = rm.joinRoom(sp.engine.roomCode, 'Intruder', 'sock-2');
+  assert.equal(spJoin.ok, false);
+
+  const mp = rm.createRoom('Host', { mode: 'MULTIPLAYER' }, 'sock-3');
+  const mpJoin = rm.joinRoom(mp.engine.roomCode, 'Friend', 'sock-4');
+  assert.equal(mpJoin.ok, true);
+
+  sp.engine.destroy();
+  mp.engine.destroy();
 });

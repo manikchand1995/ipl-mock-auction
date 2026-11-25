@@ -245,16 +245,16 @@ export function gradeTeamSquad(team: TeamState): TeamGrade {
   const weaknesses: string[] = [];
 
   if (battingScore >= 85) strengths.push('Explosive top-to-middle batting firepower');
-  else if (battingScore < 72) weaknesses.push('Batting unit lacks star firepower');
+  else if (battingScore < 78) weaknesses.push('Batting unit lacks star firepower');
 
   if (bowlingScore >= 85) strengths.push('Potent wicket-taking bowling attack');
-  else if (bowlingScore < 72) weaknesses.push('Bowling attack may leak runs at the death');
+  else if (bowlingScore < 78) weaknesses.push('Bowling attack may leak runs at the death');
 
   if (homeAdvantageScore >= 85) {
     strengths.push(
       `Tailored for ${team.franchise.homeGround.city} (${team.franchise.homeGround.pitchLabel})`
     );
-  } else if (homeAdvantageScore < 72) {
+  } else if (homeAdvantageScore < 78) {
     weaknesses.push(
       `Suboptimal fit for ${team.franchise.homeGround.city} (${team.franchise.homeGround.pitchLabel})`
     );
@@ -262,11 +262,27 @@ export function gradeTeamSquad(team: TeamState): TeamGrade {
 
   if (arCount >= 3) strengths.push('Deep all-rounder versatility');
   if (wkCount === 0) weaknesses.push('No specialist wicketkeeper in XI');
+  else if (squadWkCount < 2) weaknesses.push('No backup wicketkeeper on the bench');
   if (bowlCount < 5) weaknesses.push('Short on 5th/6th bowling options');
+  if (xiSpinners.length < 2) weaknesses.push('Light on frontline spin options in XI');
+  if (xiPacers.length < 2) weaknesses.push('Thin frontline pace attack in XI');
+  if (arCount < 2) weaknesses.push('Limited all-rounder flexibility in XI');
+  if (avgFielding < 78) weaknesses.push('Below-par fielding unit');
   if (team.squad.length < 18) weaknesses.push(`Undersized squad (${team.squad.length}/18)`);
 
   if (strengths.length === 0) strengths.push('Well-rounded squad depth');
-  if (weaknesses.length === 0) weaknesses.push('No glaring structural gaps');
+  if (weaknesses.length === 0) {
+    const minArea = [
+      { label: 'batting firepower', val: battingScore },
+      { label: 'bowling depth', val: bowlingScore },
+      { label: `${team.franchise.homeGround.pitchLabel.toLowerCase()} pitch fit`, val: homeAdvantageScore },
+    ].sort((a, b) => a.val - b.val)[0];
+    if (minArea.val < 86) {
+      weaknesses.push(`Relative soft spot in ${minArea.label} (${minArea.val}/100)`);
+    } else {
+      weaknesses.push('No glaring structural gaps');
+    }
+  }
 
   const bestValueBuy =
     [...team.squad].sort((a, b) => {

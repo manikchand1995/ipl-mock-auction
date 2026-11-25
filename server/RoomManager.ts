@@ -79,9 +79,14 @@ export class RoomManager {
     roomCode: string,
     displayName: string,
     socketId: string
-  ): { engine: AuctionEngine; session: PlayerSession } | null {
+  ):
+    | { ok: true; engine: AuctionEngine; session: PlayerSession }
+    | { ok: false; error: string } {
     const engine = this.getRoom(roomCode);
-    if (!engine) return null;
+    if (!engine) return { ok: false, error: 'Room not found' };
+    if (engine.config.mode === 'SINGLE_PLAYER') {
+      return { ok: false, error: 'This is a Single Player room' };
+    }
 
     const playerToken = uuidv4();
     const session: PlayerSession = {
@@ -92,7 +97,7 @@ export class RoomManager {
       disconnectTimer: null,
     };
     this.sessions.set(playerToken, session);
-    return { engine, session };
+    return { ok: true, engine, session };
   }
 
   public reconnectSession(
