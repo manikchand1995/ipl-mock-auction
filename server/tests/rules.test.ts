@@ -387,14 +387,22 @@ test('resolveRTMDecision updates currentLot.highestBidderTeamId to the RTM team'
     rtmFinalOfferLakhs: 1400,
   };
 
-  const err = engine.resolveRTMDecision(true, 'rcb');
+  const err1 = engine.resolveRTMDecision(true, 'rcb');
+  assert.equal(err1, null);
+  assert.equal(engine.phase, 'RTM_COUNTER');
+
+  const err2 = engine.submitRTMCounter('mi', 100);
+  assert.equal(err2, null);
+  assert.equal(engine.phase, 'RTM_DECISION');
+
+  const err3 = engine.resolveRTMDecision(true, 'rcb');
   const state = engine.getPublicState();
   engine.destroy();
 
-  assert.equal(err, null);
+  assert.equal(err3, null);
   assert.equal(state.phase, 'SOLD_REVEAL');
   assert.equal(state.currentLot?.highestBidderTeamId, 'rcb');
-  assert.equal(state.currentLot?.currentBidLakhs, 1400);
+  assert.equal(state.currentLot?.currentBidLakhs, 1500);
   assert.equal(state.teams['rcb'].squad[0]?.acquiredVia, 'RTM');
 });
 

@@ -454,7 +454,9 @@ export class AuctionEngine {
       if (this.phase === 'BIDDING') {
         this.handleBiddingTimerExpired();
       } else if (this.phase === 'RTM_COUNTER') {
-        this.transitionToRTMDecision();
+        if (this.currentLot?.highestBidderTeamId) {
+          this.submitRTMCounter(this.currentLot.highestBidderTeamId, 0);
+        }
       } else if (this.phase === 'RTM_DECISION') {
         this.resolveRTMDecision(false);
       }
@@ -602,20 +604,12 @@ export class AuctionEngine {
     if (rtmEligible && prevTeam) {
       lot.rtmEligibleTeamId = prevTeam.franchise.id;
       lot.rtmFinalOfferLakhs = lot.currentBidLakhs;
-      this.phase = 'RTM_COUNTER';
-      this.timerEndsAt = Date.now() + 8000;
+      lot.rtmCounterUsed = false;
       this.addSystemMessage(
-        `${prevTeam.franchise.shortName} holds an RTM card for ${lot.player.name}! ${this.teams[lot.highestBidderTeamId].franchise.shortName} may submit one final counter-offer.`
+        `${prevTeam.franchise.shortName} holds an RTM card for ${lot.player.name} at ${formatINR(lot.currentBidLakhs)}!`
       );
-      this.emitState();
-
-      // If highest bidder is AI, resolve counter quickly
-      const winnerTeam = this.teams[lot.highestBidderTeamId];
-      if (winnerTeam.ownerType === 'AI') {
-        this.aiTimeout = setTimeout(() => {
-          this.submitRTMCounter(winnerTeam.franchise.id, 0);
-        }, 1400);
-      }
+      // Official 3-step IPL RTM: Step 1 -> ask previous team first
+      this.transitionToRTMDecision();
       return;
     }
 
@@ -625,6 +619,8 @@ export class AuctionEngine {
   public submitRTMCounter(teamId: string, raiseLakhs: number): string | null {
     if (this.phase !== 'RTM_COUNTER' || !this.currentLot) return 'Not in RTM counter';
     if (this.currentLot.highestBidderTeamId !== teamId) return 'Only winning bidder can counter';
+
+    this.currentLot.rtmCounterUsed = true;
 
     if (raiseLakhs > 0) {
       const team = this.teams[teamId];
@@ -637,9 +633,25 @@ export class AuctionEngine {
       this.addSystemMessage(
         `${team.franchise.shortName} raises final offer to ${formatINR(newOffer)}!`
       );
+      // Step 3 -> ask RTM team to match raised offer
+      this.transitionToRTMDecision();
+      return null;
     }
 
-    this.transitionToRTMDecision();
+    // Winning bidder kept price (0 raise): RTM team already opted to match in Step 1
+    const rtmTeamId = this.currentLot.rtmEligibleTeamId!;
+    const rtmTeam = this.teams[rtmTeamId];
+    const finalPrice = this.currentLot.rtmFinalOfferLakhs ?? this.currentLot.currentBidLakhs;
+    if (
+      rtmTeam &&
+      rtmTeam.rtmCardsRemaining > 0 &&
+      validateBid(rtmTeam, this.currentLot.player, finalPrice, null, this.config).valid
+    ) {
+      rtmTeam.rtmCardsRemaining -= 1;
+      this.finalizeSale(rtmTeamId, finalPrice, 'RTM');
+    } else {
+      this.finalizeSale(this.currentLot.highestBidderTeamId!, finalPrice, 'AUCTION');
+    }
     return null;
   }
 
@@ -672,21 +684,55 @@ export class AuctionEngine {
     const rtmTeamId = this.currentLot.rtmEligibleTeamId!;
     const rtmTeam = this.teams[rtmTeamId];
     const finalPrice = this.currentLot.rtmFinalOfferLakhs ?? this.currentLot.currentBidLakhs;
-
-    if (
-      useRtm &&
+    const canAfford =
       rtmTeam.rtmCardsRemaining > 0 &&
-      validateBid(rtmTeam, this.currentLot.player, finalPrice, null, this.config).valid
-    ) {
-      rtmTeam.rtmCardsRemaining -= 1;
-      this.finalizeSale(rtmTeamId, finalPrice, 'RTM');
-    } else {
+      validateBid(rtmTeam, this.currentLot.player, finalPrice, null, this.config).valid;
+
+    if (!useRtm || !canAfford) {
       this.finalizeSale(
         this.currentLot.highestBidderTeamId!,
         finalPrice,
         'AUCTION'
       );
+      return null;
     }
+
+    // Step 1 -> Step 2: RTM team exercised RTM; give highest bidder 1 final counter-raise
+    if (!this.currentLot.rtmCounterUsed && this.currentLot.highestBidderTeamId) {
+      this.clearTimers();
+      this.phase = 'RTM_COUNTER';
+      this.timerEndsAt = Date.now() + 8000;
+      const winnerTeam = this.teams[this.currentLot.highestBidderTeamId];
+      this.addSystemMessage(
+        `${rtmTeam.franchise.shortName} exercised RTM! ${winnerTeam.franchise.shortName} may submit one final counter-offer.`
+      );
+      this.emitState();
+
+      if (winnerTeam.ownerType === 'AI') {
+        const aiMax = computeAIMaxValuationLakhs(
+          winnerTeam,
+          this.currentLot.player,
+          this.config
+        );
+        let aiRaise = 0;
+        if (aiMax >= finalPrice + 100) aiRaise = 100;
+        else if (aiMax >= finalPrice + 50) aiRaise = 50;
+        if (
+          aiRaise > 0 &&
+          !validateBid(winnerTeam, this.currentLot.player, finalPrice + aiRaise, null, this.config).valid
+        ) {
+          aiRaise = 0;
+        }
+        this.aiTimeout = setTimeout(() => {
+          this.submitRTMCounter(winnerTeam.franchise.id, aiRaise);
+        }, 1400);
+      }
+      return null;
+    }
+
+    // Step 3: Final match after counter-raise
+    rtmTeam.rtmCardsRemaining -= 1;
+    this.finalizeSale(rtmTeamId, finalPrice, 'RTM');
     return null;
   }
 

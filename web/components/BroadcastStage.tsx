@@ -548,11 +548,20 @@ export default function BroadcastStage({
               ) : state.phase === 'RTM_DECISION' && rtmTeam ? (
                 <div className="rounded-xl border border-amber-400/50 bg-amber-500/10 p-3 text-center">
                   <div className="text-xs font-bold text-amber-300 uppercase">
-                    Right To Match (RTM)
+                    {lot.rtmCounterUsed ? 'Final Right To Match (RTM)' : 'Right To Match (RTM)'}
                   </div>
                   <p className="mt-1 text-xs text-slate-200">
-                    Can <strong>{rtmTeam.franchise.shortName}</strong> match{' '}
-                    {formatINR(lot.currentBidLakhs)}?
+                    {lot.rtmCounterUsed ? (
+                      <>
+                        Can <strong>{rtmTeam.franchise.shortName}</strong> match the raised offer of{' '}
+                        {formatINR(lot.currentBidLakhs)}?
+                      </>
+                    ) : (
+                      <>
+                        Will <strong>{rtmTeam.franchise.shortName}</strong> exercise RTM at{' '}
+                        {formatINR(lot.currentBidLakhs)}?
+                      </>
+                    )}
                   </p>
                   {isMyRTM && (
                     <div className="mt-3 grid grid-cols-2 gap-2">

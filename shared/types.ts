@@ -160,6 +160,7 @@ export interface CurrentLot {
   isAccelerated: boolean;
   rtmEligibleTeamId: string | null;
   rtmFinalOfferLakhs: number | null;
+  rtmCounterUsed?: boolean;
 }
 
 export interface ChatMessage {
