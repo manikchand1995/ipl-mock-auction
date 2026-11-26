@@ -232,6 +232,7 @@ export interface InningsScorecard {
   wickets: number;
   overs: string;
   extras: number;
+  powerplayScore?: string;
   batters: BatterInnings[];
   yetToBat?: { playerId: string; name: string; role: PlayerRole }[];
   bowlers: BowlerFigures[];

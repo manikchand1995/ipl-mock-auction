@@ -152,8 +152,18 @@ function InningsTable({
       </div>
 
       <div className="space-y-1.5 text-[11px] text-slate-400">
-        <div>
-          Extras: <strong className="text-slate-200">{innings.extras}</strong>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span>
+            Extras: <strong className="text-slate-200">{innings.extras}</strong>
+          </span>
+          {innings.powerplayScore && (
+            <span>
+              Powerplay (1–6 Ov):{' '}
+              <strong className="font-mono text-amber-300">
+                {innings.powerplayScore}
+              </strong>
+            </span>
+          )}
         </div>
         {innings.yetToBat && innings.yetToBat.length > 0 && (
           <div className="rounded-lg border border-slate-800/80 bg-slate-900/50 px-2.5 py-1.5 leading-relaxed">

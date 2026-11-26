@@ -150,6 +150,7 @@ test('simulateIPLSeason generates timetable, scorecards, and player/team stats',
   assert.ok(season.playerStats.some((ps) => (ps.mvpPoints ?? 0) > 0));
   assert.ok(season.matches[0].innings1.batters.length > 0);
   assert.ok(season.matches[0].innings1.bowlers.length > 0);
+  assert.ok(season.matches[0].innings1.powerplayScore?.includes('/'));
   assert.equal(
     season.matches[0].innings1.batters.length +
       (season.matches[0].innings1.yetToBat?.length ?? 0),

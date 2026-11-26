@@ -249,10 +249,11 @@ function buildInningsScorecard(
     }
   }
 
-  // Distribute wickets among bowlers weighted by overs bowled * bowling rating
-  const bowlerWeights = selectedBowlers.map(
-    (b, idx) => Math.max(1, bowlerOvers[idx]) * Math.max(20, b.player.ratings.bowling)
-  );
+  // Distribute wickets among bowlers weighted by overs bowled * bowling rating (+ new-ball Powerplay boost)
+  const bowlerWeights = selectedBowlers.map((b, idx) => {
+    const ppNewBallBoost = idx < 2 ? 1.22 : 1.0;
+    return Math.max(1, bowlerOvers[idx]) * Math.max(20, b.player.ratings.bowling) * ppNewBallBoost;
+  });
   const bowlerWickets = new Array(selectedBowlers.length).fill(0);
   for (let w = 0; w < targetWickets; w++) {
     const totalW = bowlerWeights.reduce((a, b) => a + b, 0);
@@ -370,9 +371,13 @@ function buildInningsScorecard(
   const batters: BatterInnings[] = activeBatters.map((b, idx) => {
     const r = batterRuns[idx];
     const balls = batterBalls[idx];
-    const sixes = Math.min(Math.floor(r / 12), Math.floor((r / 6) * (0.25 + Math.random() * 0.3)));
+    // Overs 1-6 Powerplay: top-3 batters face field restrictions (2 outside circle -> more boundaries)
+    const isPowerplayBatter = idx < 3;
+    const sixFactor = isPowerplayBatter ? 0.3 + Math.random() * 0.3 : 0.25 + Math.random() * 0.3;
+    const fourFactor = isPowerplayBatter ? 0.52 + Math.random() * 0.34 : 0.4 + Math.random() * 0.35;
+    const sixes = Math.min(Math.floor(r / 10), Math.floor((r / 6) * sixFactor));
     const remForFours = Math.max(0, r - sixes * 6);
-    const fours = Math.min(Math.floor(remForFours / 4), Math.floor((remForFours / 4) * (0.4 + Math.random() * 0.35)));
+    const fours = Math.min(Math.floor(remForFours / 4), Math.floor((remForFours / 4) * fourFactor));
     const sr = balls > 0 ? Number(((r / balls) * 100).toFixed(1)) : 0;
 
     const isOut = idx < targetWickets;
@@ -405,6 +410,16 @@ function buildInningsScorecard(
     role: b.player.role,
   }));
 
+  // Powerplay (Overs 1-6): higher boundary & wicket volatility
+  const ppShare = 0.27 + Math.random() * 0.1;
+  const ppRuns = Math.min(targetTotalRuns, Math.max(24, Math.round(targetTotalRuns * ppShare)));
+  const ppMaxWkts = Math.min(targetWickets, 4);
+  const ppWicketRoll = Math.random();
+  const ppWickets = Math.min(
+    ppMaxWkts,
+    ppWicketRoll < 0.16 ? 0 : ppWicketRoll < 0.54 ? 1 : ppWicketRoll < 0.84 ? 2 : 3
+  );
+
   return {
     battingTeamId: battingTeam.franchise.id,
     bowlingTeamId: bowlingTeam.franchise.id,
@@ -412,6 +427,7 @@ function buildInningsScorecard(
     wickets: targetWickets,
     overs: oversStr,
     extras,
+    powerplayScore: `${ppRuns}/${ppWickets}`,
     batters,
     yetToBat,
     bowlers: bowlerFigures,
