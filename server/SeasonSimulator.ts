@@ -368,6 +368,22 @@ function buildInningsScorecard(
     }
   });
 
+  const notOutCount = Math.max(0, activeBatters.length - targetWickets);
+  const notOutSet = new Set<number>();
+  if (notOutCount > 0 && activeBatters.length > 0) {
+    let maxIdx = 0;
+    for (let i = 1; i < batterRuns.length; i++) {
+      if (batterRuns[i] > batterRuns[maxIdx]) maxIdx = i;
+    }
+    if (batterRuns[maxIdx] >= 35 && Math.random() < 0.55) {
+      notOutSet.add(maxIdx);
+    }
+    for (let i = activeBatters.length - 1; i >= 0 && notOutSet.size < notOutCount; i--) {
+      notOutSet.add(i);
+    }
+  }
+  let outCounter = 0;
+
   const batters: BatterInnings[] = activeBatters.map((b, idx) => {
     const r = batterRuns[idx];
     const balls = batterBalls[idx];
@@ -380,10 +396,10 @@ function buildInningsScorecard(
     const fours = Math.min(Math.floor(remForFours / 4), Math.floor((remForFours / 4) * fourFactor));
     const sr = balls > 0 ? Number(((r / balls) * 100).toFixed(1)) : 0;
 
-    const isOut = idx < targetWickets;
+    const isOut = !notOutSet.has(idx);
     let outText = 'not out';
     if (isOut) {
-      const bName = dismissalBowlers[idx] ?? 'Bowler';
+      const bName = dismissalBowlers[outCounter++] ?? 'Bowler';
       const catcher =
         bowlersXI[Math.floor(Math.random() * bowlersXI.length)]?.player.name
           .split(' ')

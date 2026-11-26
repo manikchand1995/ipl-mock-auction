@@ -203,6 +203,12 @@ test('simulateIPLSeason generates timetable, scorecards, and player/team stats',
     season.matches.some((m) => m.innings1.bowlers.length === 6 || m.innings2.bowlers.length === 6),
     'Expected at least some innings to use 6 bowlers including all-rounders'
   );
+  assert.ok(
+    season.matches.some((m) =>
+      m.innings1.batters.slice(0, 3).some((b) => b.outText === 'not out')
+    ),
+    'Expected at least some innings where a top-3 batter carries their bat not out'
+  );
 });
 
 test('playingRole places openers before top-order batters like Suryakumar Yadav', () => {
