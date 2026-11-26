@@ -510,3 +510,38 @@ test('submitHumanRetention enforces official max 5 capped and max 2 uncapped lim
     engine.destroy();
   }
 });
+
+test('skipping all sets after 3 retentions auto-fills human squad up to minSquadSize (18)', () => {
+  const pool = playersData as Player[];
+  const cskEligible = pool.filter((p) => p.previousTeamId === 'csk').slice(0, 3);
+  const engine = new AuctionEngine(
+    'FILL01',
+    'host-tok',
+    { ...DEFAULT_ROOM_CONFIG, mode: 'SINGLE_PLAYER', enableRetentionAndRTM: true },
+    { onStateChange: () => {}, onReaction: () => {} }
+  );
+  try {
+    engine.assignHumanToTeam('csk', 'host-tok', 'Host');
+    engine.startAuction();
+    const err = engine.submitHumanRetention(
+      'csk',
+      cskEligible.map((p) => p.id)
+    );
+    assert.equal(err, null);
+
+    let guard = 0;
+    while (engine.phase === 'BIDDING' && guard < 20) {
+      engine.skipMultipleLots('SET', 0, 'csk');
+      guard++;
+    }
+
+    const state = engine.getPublicState();
+    assert.equal(state.phase, 'COMPLETED');
+    assert.ok(
+      state.teams['csk'].squad.length >= DEFAULT_ROOM_CONFIG.minSquadSize,
+      `Expected >= ${DEFAULT_ROOM_CONFIG.minSquadSize} players, got ${state.teams['csk'].squad.length}`
+    );
+  } finally {
+    engine.destroy();
+  }
+});

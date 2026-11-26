@@ -937,6 +937,8 @@ export class AuctionEngine {
     this.currentLot = null;
     this.phase = 'COMPLETED';
 
+    this.autoFillMinimumSquads();
+
     const grades: Record<string, TeamGrade> = {};
     for (const [teamId, team] of Object.entries(this.teams)) {
       const g = gradeTeamSquad(team);
@@ -948,6 +950,82 @@ export class AuctionEngine {
     this.grades = grades;
     this.addSystemMessage('Auction COMPLETED! Check out the squad grades & Playing XIs.');
     this.emitState();
+  }
+
+  private autoFillMinimumSquads(): void {
+    const ownedIds = new Set<string>();
+    for (const team of Object.values(this.teams)) {
+      for (const s of team.squad) ownedIds.add(s.player.id);
+    }
+
+    const poolMap = new Map<string, Player>();
+    for (const p of [...this.playerQueue, ...this.unsoldPool]) {
+      if (!ownedIds.has(p.id) && !poolMap.has(p.id)) {
+        poolMap.set(p.id, p);
+      }
+    }
+    const available = Array.from(poolMap.values());
+    const filledTeams = new Set<string>();
+
+    while (available.length > 0) {
+      const needy = Object.values(this.teams)
+        .filter((t) => t.squad.length < this.config.minSquadSize)
+        .sort((a, b) => a.squad.length - b.squad.length);
+      if (needy.length === 0) break;
+
+      let assignedAny = false;
+      for (const team of needy) {
+        const wkCount = team.squad.filter((s) => s.player.role === 'WK').length;
+        const bowlCount = team.squad.filter(
+          (s) => s.player.role === 'BOWL' || s.player.role === 'AR'
+        ).length;
+        const batCount = team.squad.filter(
+          (s) => s.player.role === 'BAT' || s.player.role === 'WK'
+        ).length;
+
+        let bestIdx = -1;
+        let bestScore = -Infinity;
+        for (let i = 0; i < available.length; i++) {
+          const p = available[i];
+          if (!validateBid(team, p, p.basePriceLakhs, null, this.config).valid) {
+            continue;
+          }
+          let score = p.ratings.overall;
+          if (wkCount === 0 && p.role === 'WK') score += 25;
+          if (bowlCount < 5 && (p.role === 'BOWL' || p.role === 'AR')) score += 18;
+          if (batCount < 5 && (p.role === 'BAT' || p.role === 'WK')) score += 15;
+          // Prefer domestic players when overseas slots are tight
+          if (!p.isOverseas) score += 2;
+          if (score > bestScore) {
+            bestScore = score;
+            bestIdx = i;
+          }
+        }
+
+        if (bestIdx !== -1) {
+          const [chosen] = available.splice(bestIdx, 1);
+          team.remainingPurseLakhs -= chosen.basePriceLakhs;
+          team.squad.push({
+            player: chosen,
+            priceLakhs: chosen.basePriceLakhs,
+            acquiredVia: 'AUCTION',
+          });
+          this.soldCount++;
+          filledTeams.add(team.franchise.shortName);
+          assignedAny = true;
+        }
+      }
+
+      if (!assignedAny) break;
+    }
+
+    if (filledTeams.size > 0) {
+      this.playerQueue = [];
+      this.unsoldPool = available;
+      this.addSystemMessage(
+        `Auto-filled ${[...filledTeams].join(', ')} up to minimum ${this.config.minSquadSize} players from remaining pool at base price.`
+      );
+    }
   }
 
   public setLeadership(
