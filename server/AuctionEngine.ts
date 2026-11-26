@@ -322,6 +322,11 @@ export class AuctionEngine {
       .map((id) => allPlayers.find((p) => p.id === id))
       .filter((p): p is Player => Boolean(p && p.previousTeamId === teamId));
 
+    const cappedCount = chosen.filter((p) => !p.isUncapped).length;
+    const uncappedCount = chosen.filter((p) => p.isUncapped).length;
+    if (cappedCount > 5) return 'Max 5 capped retentions allowed';
+    if (uncappedCount > 2) return 'Max 2 uncapped retentions allowed';
+
     const cost = calculateRetentionCostLakhs(chosen);
     if (cost > team.remainingPurseLakhs - this.config.minSquadSize * 30) {
       return 'Retention cost exceeds available purse';

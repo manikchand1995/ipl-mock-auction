@@ -478,3 +478,35 @@ test('skipMultipleLots works in SINGLE_PLAYER mode and is ignored in MULTIPLAYER
     mp.destroy();
   }
 });
+
+test('submitHumanRetention enforces official max 5 capped and max 2 uncapped limits', () => {
+  const pool = playersData as Player[];
+  const uncapped = pool.filter((p) => p.isUncapped && p.previousTeamId === 'csk');
+  const capped = pool.filter((p) => !p.isUncapped && p.previousTeamId === 'csk');
+  const engine = new AuctionEngine(
+    'RET001',
+    'host-tok',
+    { ...DEFAULT_ROOM_CONFIG, enableRetentionAndRTM: true, maxRetentionsAndRTM: 6 },
+    { onStateChange: () => {}, onReaction: () => {} }
+  );
+  try {
+    engine.assignHumanToTeam('csk', 'host-tok', 'Host');
+    engine.startAuction();
+    if (uncapped.length >= 3) {
+      const errUncapped = engine.submitHumanRetention(
+        'csk',
+        uncapped.slice(0, 3).map((p) => p.id)
+      );
+      assert.equal(errUncapped, 'Max 2 uncapped retentions allowed');
+    }
+    if (capped.length >= 6) {
+      const errCapped = engine.submitHumanRetention(
+        'csk',
+        capped.slice(0, 6).map((p) => p.id)
+      );
+      assert.equal(errCapped, 'Max 5 capped retentions allowed');
+    }
+  } finally {
+    engine.destroy();
+  }
+});

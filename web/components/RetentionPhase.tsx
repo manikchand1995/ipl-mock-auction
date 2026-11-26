@@ -44,11 +44,18 @@ export default function RetentionPhase({
     ? state.retentionReadyTeams.includes(myTeam.franchise.id)
     : true;
 
+  const cappedCount = selectedPlayers.filter((p) => !p.isUncapped).length;
+  const uncappedCount = selectedPlayers.filter((p) => p.isUncapped).length;
+
   const togglePlayer = (id: string) => {
     if (isLocked) return;
     if (selectedIds.includes(id)) {
       setSelectedIds(selectedIds.filter((x) => x !== id));
     } else if (selectedIds.length < state.config.maxRetentionsAndRTM) {
+      const candidate = eligiblePlayers.find((p) => p.id === id);
+      if (!candidate) return;
+      if (candidate.isUncapped && uncappedCount >= 2) return;
+      if (!candidate.isUncapped && cappedCount >= 5) return;
       setSelectedIds([...selectedIds, id]);
     }
   };
@@ -68,6 +75,11 @@ export default function RetentionPhase({
           <p className="mt-1 text-xs text-slate-400">
             Unused retention slots (up to {state.config.maxRetentionsAndRTM}) become{' '}
             <strong className="text-amber-300">RTM Cards</strong> in the live auction.
+            {myTeam && (
+              <span className="ml-2 text-slate-300">
+                (Capped {cappedCount}/5 • Uncapped {uncappedCount}/2)
+              </span>
+            )}
           </p>
         </div>
 

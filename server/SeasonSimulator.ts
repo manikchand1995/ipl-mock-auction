@@ -640,6 +640,9 @@ function simulateMatch(
     ? (chaseDynamic.pitchFit - 70) * 0.18
     : -(batFirstDynamic.pitchFit - 70) * 0.08;
 
+  const isNightMatch = Math.random() < 0.75;
+  const dewChaseAdj = isNightMatch ? 3 : -2;
+
   const batFirstExpected =
     par +
     (batFirstDynamic.bat - chaseDynamic.bowl) * 0.45 +
@@ -651,32 +654,77 @@ function simulateMatch(
     (chaseDynamic.bat - batFirstDynamic.bowl) * 0.45 +
     chaseHomeBoost +
     chaseLeadBoost +
+    dewChaseAdj +
     (Math.random() * 34 - 17);
 
-  let batFirstRuns = Math.round(clamp(batFirstExpected, 115, 255));
-  let chaseRuns = Math.round(clamp(chaseExpected, 110, 255));
+  const batFirstRuns = Math.round(clamp(batFirstExpected, 110, 255));
+  const chaseRuns = Math.round(clamp(chaseExpected, 105, 255));
 
-  if (batFirstRuns === chaseRuns) {
-    if (Math.random() >= 0.5) batFirstRuns += 1;
-    else chaseRuns += 1;
+  const isTie = batFirstRuns === chaseRuns;
+  let batFirstWon = batFirstRuns > chaseRuns;
+  let superOverNote = '';
+
+  if (isTie) {
+    let so1 = Math.floor(6 + Math.random() * 15);
+    let so2 = Math.floor(6 + Math.random() * 15);
+    while (so1 === so2) {
+      so1 = Math.floor(6 + Math.random() * 15);
+      so2 = Math.floor(6 + Math.random() * 15);
+    }
+    batFirstWon = so1 > so2;
+    const winSO = batFirstWon ? so1 : so2;
+    const loseSO = batFirstWon ? so2 : so1;
+    const soWinner = batFirstWon ? batFirstTeam : chaseTeam;
+    superOverNote = `${soWinner.franchise.shortName} won via Super Over (${winSO} vs ${loseSO})`;
   }
 
-  const batFirstWon = batFirstRuns > chaseRuns;
   const winnerTeamId = batFirstWon
     ? batFirstTeam.franchise.id
     : chaseTeam.franchise.id;
 
-  const batFirstWickets = batFirstWon
-    ? Math.floor(2 + Math.random() * 5)
-    : Math.floor(6 + Math.random() * 4);
-  const chaseWickets = !batFirstWon
-    ? Math.floor(2 + Math.random() * 5)
-    : Math.floor(6 + Math.random() * 4);
+  const formatOvers = (balls: number) => `${Math.floor(balls / 6)}.${balls % 6}`;
+  const ballsToFloat = (balls: number) =>
+    Math.floor(balls / 6) + (balls % 6) / 6;
 
-  const batFirstOversStr = '20.0';
-  const chaseOversStr = batFirstWon ? '20.0' : '19.2';
-  const chaseTotalBalls = batFirstWon ? 120 : 116;
-  const chaseOversFloat = batFirstWon ? 20 : 19.33;
+  // Allow 10-wicket all-outs on low totals or collapses
+  let batFirstWickets = batFirstWon
+    ? Math.floor(2 + Math.random() * 5)
+    : Math.floor(6 + Math.random() * 4);
+  if (
+    !batFirstWon &&
+    (batFirstRuns < 140 || (batFirstWickets === 9 && Math.random() < 0.45))
+  ) {
+    batFirstWickets = 10;
+  }
+
+  let chaseWickets = !batFirstWon && !isTie
+    ? Math.floor(2 + Math.random() * 5)
+    : Math.floor(6 + Math.random() * 4);
+  if (
+    batFirstWon &&
+    !isTie &&
+    (chaseRuns < batFirstRuns - 18 || (chaseWickets === 9 && Math.random() < 0.45))
+  ) {
+    chaseWickets = 10;
+  }
+
+  const batFirstBalls =
+    batFirstWickets === 10 ? Math.floor(98 + Math.random() * 22) : 120;
+  const batFirstOversStr = formatOvers(batFirstBalls);
+  // Official IPL NRR rule: all-out innings counts as full 20.0 overs
+  const batFirstNrrOvers = batFirstWickets === 10 ? 20 : ballsToFloat(batFirstBalls);
+
+  let chaseTotalBalls = 120;
+  if (!isTie && !batFirstWon) {
+    const wktsInHand = 10 - chaseWickets;
+    if (wktsInHand >= 8) chaseTotalBalls = Math.floor(94 + Math.random() * 17);
+    else if (wktsInHand >= 5) chaseTotalBalls = Math.floor(105 + Math.random() * 13);
+    else chaseTotalBalls = Math.floor(113 + Math.random() * 8);
+  } else if (chaseWickets === 10) {
+    chaseTotalBalls = Math.floor(98 + Math.random() * 22);
+  }
+  const chaseOversStr = formatOvers(chaseTotalBalls);
+  const chaseNrrOvers = chaseWickets === 10 ? 20 : ballsToFloat(chaseTotalBalls);
 
   const innings1 = buildInningsScorecard(
     batFirstTeam,
@@ -686,7 +734,7 @@ function simulateMatch(
     batFirstRuns,
     batFirstWickets,
     batFirstOversStr,
-    120
+    batFirstBalls
   );
   if (batFirstImpact) innings1.battingImpactSub = batFirstImpact.info;
   if (chaseImpact) innings1.bowlingImpactSub = chaseImpact.info;
@@ -712,9 +760,11 @@ function simulateMatch(
   updateFormAfterInnings(innings1, formMap);
   updateFormAfterInnings(innings2, formMap);
 
-  const marginText = batFirstWon
-    ? `${batFirstTeam.franchise.shortName} won by ${batFirstRuns - chaseRuns} runs`
-    : `${chaseTeam.franchise.shortName} won by ${10 - chaseWickets} wickets`;
+  const marginText = isTie
+    ? superOverNote
+    : batFirstWon
+      ? `${batFirstTeam.franchise.shortName} won by ${batFirstRuns - chaseRuns} runs`
+      : `${chaseTeam.franchise.shortName} won by ${10 - chaseWickets} wickets`;
 
   // Pick top performer from winning innings
   const winInn = batFirstWon ? innings1 : innings2;
@@ -736,8 +786,8 @@ function simulateMatch(
   const awayWickets = homeBatsFirst ? chaseWickets : batFirstWickets;
   const homeOversStr = homeBatsFirst ? batFirstOversStr : chaseOversStr;
   const awayOversStr = homeBatsFirst ? chaseOversStr : batFirstOversStr;
-  const homeOvers = homeBatsFirst ? 20 : chaseOversFloat;
-  const awayOvers = homeBatsFirst ? chaseOversFloat : 20;
+  const homeOvers = homeBatsFirst ? batFirstNrrOvers : chaseNrrOvers;
+  const awayOvers = homeBatsFirst ? chaseNrrOvers : batFirstNrrOvers;
 
   return {
     result: {
@@ -887,7 +937,7 @@ export function simulateIPLSeason(
         nrr: Number(nrr.toFixed(3)),
       };
     })
-    .sort((a, b) => b.points - a.points || b.nrr - a.nrr);
+    .sort((a, b) => b.points - a.points || b.won - a.won || b.nrr - a.nrr);
 
   // Playoffs
   const seed1 = teams[standings[0].teamId];
