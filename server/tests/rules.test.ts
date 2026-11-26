@@ -26,7 +26,7 @@ const samplePlayer: Player = {
   battingStyle: 'Right-hand bat',
   bowlingStyle: 'N/A',
   basePriceLakhs: 200,
-  set: 'MARQUEE',
+  set: 'M1',
   previousTeamId: 'mi',
   stats: { matches: 50, runs: 1500, strikeRate: 145 },
   ratings: { overall: 90, batting: 92, bowling: 15, fielding: 85 },
@@ -530,7 +530,7 @@ test('skipping all sets after 3 retentions auto-fills human squad up to minSquad
     assert.equal(err, null);
 
     let guard = 0;
-    while (engine.phase === 'BIDDING' && guard < 20) {
+    while (engine.phase === 'BIDDING' && guard < 40) {
       engine.skipMultipleLots('SET', 0, 'csk');
       guard++;
     }

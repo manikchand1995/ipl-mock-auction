@@ -172,20 +172,23 @@ export function gradeTeamSquad(team: TeamState): TeamGrade {
   const arCount = playingXI.filter((p) => p.player.role === 'AR').length;
   const bowlCount = bowlers.length;
 
-  let balanceRaw = 42;
-  if (wkCount >= 1) balanceRaw += 9;
+  let balanceRaw = 26;
+  if (wkCount >= 1) balanceRaw += 8;
   if (squadWkCount >= 2) balanceRaw += 3;
   balanceRaw += Math.min(18, bowlCount * 3);
   balanceRaw += Math.min(12, arCount * 4);
   balanceRaw += Math.min(8, Math.max(0, team.squad.length - 16));
-  balanceRaw += (avgFielding / 100) * 8;
+  balanceRaw += (avgFielding / 100) * 10;
   if (playingXI.length === 11) balanceRaw += 4;
-  const balanceScore = Math.round(Math.min(100, balanceRaw));
+  const balanceScore = Math.round(Math.min(100, Math.max(40, balanceRaw)));
 
-  const battingRaw = avgTopBat * 0.65 + avgBatting * 0.25 + reserveBatAvg * 0.1;
-  const bowlingRaw = avgTopBowl * 0.7 + avgBowling * 0.2 + reserveBowlAvg * 0.1;
-  const battingScore = Math.round(Math.min(100, battingRaw));
-  const bowlingScore = Math.round(Math.min(100, bowlingRaw));
+  const stretch = (raw: number, center = 85, factor = 2.2) =>
+    Math.min(98, Math.max(45, center + (raw - center) * factor));
+
+  const battingRaw = stretch(avgTopBat * 0.65 + avgBatting * 0.25 + reserveBatAvg * 0.1);
+  const bowlingRaw = stretch(avgTopBowl * 0.7 + avgBowling * 0.2 + reserveBowlAvg * 0.1);
+  const battingScore = Math.round(battingRaw);
+  const bowlingScore = Math.round(bowlingRaw);
 
   // Home ground fit score based on pitchType (continuous so teams don't tie at 100)
   const pitch = team.franchise.homeGround.pitchType;
@@ -234,11 +237,13 @@ export function gradeTeamSquad(team: TeamState): TeamGrade {
   }
   const homeAdvantageScore = Math.round(Math.min(100, homeRaw));
 
-  const overallScore = Math.round(
+  const rawOverall =
     battingRaw * 0.30 +
-      bowlingRaw * 0.30 +
-      balanceRaw * 0.25 +
-      homeRaw * 0.15
+    bowlingRaw * 0.30 +
+    balanceRaw * 0.25 +
+    homeRaw * 0.15;
+  const overallScore = Math.round(
+    Math.min(97, Math.max(58, 86 + (rawOverall - 86) * 2.2))
   );
 
   const strengths: string[] = [];

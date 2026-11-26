@@ -9,7 +9,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 283,
@@ -44,7 +44,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 160,
@@ -79,7 +79,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 111,
@@ -114,7 +114,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 148,
@@ -149,7 +149,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M1",
     "previousTeamId": "gt",
     "stats": {
       "matches": 138,
@@ -184,7 +184,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M1",
     "previousTeamId": "srh",
     "stats": {
       "matches": 58,
@@ -220,7 +220,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M1",
     "previousTeamId": "gt",
     "stats": {
       "matches": 152,
@@ -260,7 +260,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 160,
@@ -295,7 +295,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 240,
@@ -335,7 +335,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 96,
@@ -370,7 +370,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm fast",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 41,
@@ -405,7 +405,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 80,
@@ -440,7 +440,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 257,
@@ -475,7 +475,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 179,
@@ -510,7 +510,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M1",
     "previousTeamId": "gt",
     "stats": {
       "matches": 103,
@@ -545,7 +545,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "rr",
     "stats": {
       "matches": 52,
@@ -580,7 +580,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "csk",
     "stats": {
       "matches": 66,
@@ -615,7 +615,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M1",
     "previousTeamId": "srh",
     "stats": {
       "matches": 25,
@@ -650,7 +650,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 150,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 45,
@@ -685,7 +685,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 150,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 38,
@@ -720,7 +720,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 150,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "gt",
     "stats": {
       "matches": 25,
@@ -755,7 +755,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 150,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "dc",
     "stats": {
       "matches": 130,
@@ -790,7 +790,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 200,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 145,
@@ -825,7 +825,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 200,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "dc",
     "stats": {
       "matches": 9,
@@ -860,7 +860,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 200,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "csk",
     "stats": {
       "matches": 23,
@@ -895,7 +895,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 150,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 72,
@@ -930,7 +930,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 150,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 27,
@@ -965,7 +965,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 50,
-    "set": "BAT",
+    "set": "UBA1",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 24,
@@ -1000,7 +1000,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 137,
@@ -1040,7 +1040,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M1",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 127,
@@ -1080,7 +1080,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M1",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 177,
@@ -1120,7 +1120,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 150,
@@ -1160,7 +1160,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 150,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "srh",
     "stats": {
       "matches": 63,
@@ -1200,7 +1200,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 200,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "srh",
     "stats": {
       "matches": 39,
@@ -1240,7 +1240,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 200,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 96,
@@ -1280,7 +1280,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 200,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 59,
@@ -1320,7 +1320,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 150,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "csk",
     "stats": {
       "matches": 65,
@@ -1360,7 +1360,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 200,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 50,
@@ -1400,7 +1400,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 200,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 29,
@@ -1440,7 +1440,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 200,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 134,
@@ -1480,7 +1480,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 200,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 212,
@@ -1520,7 +1520,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 100,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "srh",
     "stats": {
       "matches": 15,
@@ -1560,7 +1560,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 150,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 70,
@@ -1600,7 +1600,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 150,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 127,
@@ -1640,7 +1640,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 150,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "srh",
     "stats": {
       "matches": 60,
@@ -1680,7 +1680,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "csk",
     "stats": {
       "matches": 168,
@@ -1715,7 +1715,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 76,
@@ -1750,7 +1750,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "srh",
     "stats": {
       "matches": 35,
@@ -1785,7 +1785,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "csk",
     "stats": {
       "matches": 264,
@@ -1820,7 +1820,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 200,
-    "set": "WK",
+    "set": "WK1",
     "previousTeamId": "srh",
     "stats": {
       "matches": 105,
@@ -1855,7 +1855,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 21,
@@ -1890,7 +1890,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 200,
-    "set": "WK",
+    "set": "WK1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 107,
@@ -1925,7 +1925,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 100,
-    "set": "WK",
+    "set": "WK1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 40,
@@ -1960,7 +1960,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 100,
-    "set": "WK",
+    "set": "WK1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 27,
@@ -1995,7 +1995,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 150,
-    "set": "WK",
+    "set": "WK2",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 14,
@@ -2030,7 +2030,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 110,
@@ -2065,7 +2065,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "gt",
     "stats": {
       "matches": 93,
@@ -2100,7 +2100,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "mi",
     "stats": {
       "matches": 104,
@@ -2135,7 +2135,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 27,
@@ -2170,7 +2170,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 150,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 20,
@@ -2205,7 +2205,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 100,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 21,
@@ -2240,7 +2240,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm medium-fast",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "dc",
     "stats": {
       "matches": 61,
@@ -2275,7 +2275,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 200,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 176,
@@ -2310,7 +2310,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 200,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 81,
@@ -2345,7 +2345,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 63,
@@ -2380,7 +2380,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 51,
@@ -2415,7 +2415,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "csk",
     "stats": {
       "matches": 57,
@@ -2450,7 +2450,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 100,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 20,
@@ -2485,7 +2485,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 100,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 4,
@@ -2520,7 +2520,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "rr",
     "stats": {
       "matches": 40,
@@ -2555,7 +2555,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm fast",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "AL1",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 21,
@@ -2594,7 +2594,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 160,
@@ -2629,7 +2629,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm wrist-spin",
     "basePriceLakhs": 200,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 84,
@@ -2664,7 +2664,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 150,
-    "set": "MARQUEE",
+    "set": "M2",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 71,
@@ -2699,7 +2699,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 150,
-    "set": "SPIN_BOWL",
+    "set": "SP1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 66,
@@ -2734,7 +2734,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm wrist-spin",
     "basePriceLakhs": 150,
-    "set": "SPIN_BOWL",
+    "set": "SP1",
     "previousTeamId": "csk",
     "stats": {
       "matches": 23,
@@ -2769,7 +2769,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 150,
-    "set": "SPIN_BOWL",
+    "set": "AL1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 26,
@@ -2808,7 +2808,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 150,
-    "set": "SPIN_BOWL",
+    "set": "SP1",
     "previousTeamId": "csk",
     "stats": {
       "matches": 27,
@@ -2843,7 +2843,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 100,
-    "set": "SPIN_BOWL",
+    "set": "SP2",
     "previousTeamId": "csk",
     "stats": {
       "matches": 78,
@@ -2878,7 +2878,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 75,
-    "set": "SPIN_BOWL",
+    "set": "SP2",
     "previousTeamId": "gt",
     "stats": {
       "matches": 10,
@@ -2913,7 +2913,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 50,
-    "set": "UNCAPPED",
+    "set": "UWK1",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 34,
@@ -2948,7 +2948,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 11,
@@ -2983,7 +2983,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 50,
-    "set": "UNCAPPED",
+    "set": "UWK1",
     "previousTeamId": "dc",
     "stats": {
       "matches": 18,
@@ -3018,7 +3018,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 20,
@@ -3053,7 +3053,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 7,
@@ -3088,7 +3088,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 10,
@@ -3123,7 +3123,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 40,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": "gt",
     "stats": {
       "matches": 40,
@@ -3158,7 +3158,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 50,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": "gt",
     "stats": {
       "matches": 93,
@@ -3198,7 +3198,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 40,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 42,
@@ -3233,7 +3233,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm medium-fast",
     "basePriceLakhs": 40,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 24,
@@ -3268,7 +3268,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 50,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 28,
@@ -3303,7 +3303,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 50,
-    "set": "UNCAPPED",
+    "set": "FA1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 127,
@@ -3338,7 +3338,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 20,
@@ -3373,7 +3373,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 50,
-    "set": "UNCAPPED",
+    "set": "FA2",
     "previousTeamId": "csk",
     "stats": {
       "matches": 36,
@@ -3408,7 +3408,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "srh",
     "stats": {
       "matches": 50,
@@ -3443,7 +3443,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "USP1",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 13,
@@ -3477,7 +3477,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 3,
@@ -3516,7 +3516,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "csk",
     "stats": {
       "matches": 8,
@@ -3551,7 +3551,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": "dc",
     "stats": {
       "matches": 11,
@@ -3586,7 +3586,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 41,
@@ -3625,7 +3625,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 200,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "gt",
     "stats": {
       "matches": 79,
@@ -3660,7 +3660,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 100,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": "srh",
     "stats": {
       "matches": 131,
@@ -3695,7 +3695,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 75,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 79,
@@ -3730,7 +3730,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 150,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": "csk",
     "stats": {
       "matches": 212,
@@ -3765,7 +3765,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 75,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 180,
@@ -3800,7 +3800,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 100,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 90,
@@ -3835,7 +3835,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 150,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "dc",
     "stats": {
       "matches": 127,
@@ -3870,7 +3870,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 75,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": "srh",
     "stats": {
       "matches": 100,
@@ -3905,7 +3905,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 200,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 69,
@@ -3940,7 +3940,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 150,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 40,
@@ -3975,7 +3975,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 200,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 66,
@@ -4010,7 +4010,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 200,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "dc",
     "stats": {
       "matches": 46,
@@ -4045,7 +4045,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 75,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": "csk",
     "stats": {
       "matches": 27,
@@ -4080,7 +4080,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 200,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "dc",
     "stats": {
       "matches": 12,
@@ -4115,7 +4115,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 150,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 22,
@@ -4150,7 +4150,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 150,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": "mi",
     "stats": {
       "matches": 31,
@@ -4185,7 +4185,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 50,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": null,
     "stats": {
       "matches": 86,
@@ -4220,7 +4220,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 75,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 69,
@@ -4255,7 +4255,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 200,
-    "set": "BAT",
+    "set": "BA1",
     "previousTeamId": "csk",
     "stats": {
       "matches": 15,
@@ -4290,7 +4290,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 150,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 0,
@@ -4324,7 +4324,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 75,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -4358,7 +4358,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 75,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -4392,7 +4392,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 75,
-    "set": "BAT",
+    "set": "BA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -4426,7 +4426,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 200,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 28,
@@ -4467,7 +4467,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 200,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 60,
@@ -4508,7 +4508,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 150,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 18,
@@ -4547,7 +4547,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 200,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "csk",
     "stats": {
       "matches": 73,
@@ -4588,7 +4588,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 150,
-    "set": "AR",
+    "set": "AL2",
     "previousTeamId": "rr",
     "stats": {
       "matches": 57,
@@ -4629,7 +4629,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 150,
-    "set": "AR",
+    "set": "AL2",
     "previousTeamId": "mi",
     "stats": {
       "matches": 33,
@@ -4670,7 +4670,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 150,
-    "set": "AR",
+    "set": "AL2",
     "previousTeamId": "mi",
     "stats": {
       "matches": 24,
@@ -4711,7 +4711,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 125,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 9,
@@ -4752,7 +4752,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 150,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "gt",
     "stats": {
       "matches": 20,
@@ -4793,7 +4793,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 200,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 35,
@@ -4834,7 +4834,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 200,
-    "set": "AR",
+    "set": "AL2",
     "previousTeamId": "mi",
     "stats": {
       "matches": 114,
@@ -4875,7 +4875,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 75,
-    "set": "AR",
+    "set": "AL2",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 125,
@@ -4916,7 +4916,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 50,
-    "set": "AR",
+    "set": "AL2",
     "previousTeamId": "gt",
     "stats": {
       "matches": 78,
@@ -4957,7 +4957,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 200,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "srh",
     "stats": {
       "matches": 124,
@@ -4998,7 +4998,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 125,
-    "set": "AR",
+    "set": "AL2",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 0,
@@ -5037,7 +5037,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 125,
-    "set": "AR",
+    "set": "AL2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -5076,7 +5076,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 100,
-    "set": "AR",
+    "set": "AL2",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 16,
@@ -5117,7 +5117,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 200,
-    "set": "AR",
+    "set": "AL1",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 21,
@@ -5158,7 +5158,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 150,
-    "set": "AR",
+    "set": "AL2",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 11,
@@ -5199,7 +5199,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 75,
-    "set": "AR",
+    "set": "AL2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 0,
@@ -5238,7 +5238,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 75,
-    "set": "AR",
+    "set": "AL2",
     "previousTeamId": "gt",
     "stats": {
       "matches": 3,
@@ -5277,7 +5277,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 75,
-    "set": "AR",
+    "set": "AL2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -5316,7 +5316,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "mi",
     "stats": {
       "matches": 2,
@@ -5357,7 +5357,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "rr",
     "stats": {
       "matches": 1,
@@ -5396,7 +5396,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "csk",
     "stats": {
       "matches": 0,
@@ -5435,7 +5435,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": "csk",
     "stats": {
       "matches": 2,
@@ -5476,7 +5476,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 200,
-    "set": "WK",
+    "set": "WK1",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 52,
@@ -5511,7 +5511,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 100,
-    "set": "WK",
+    "set": "WK1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 26,
@@ -5546,7 +5546,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 200,
-    "set": "WK",
+    "set": "WK1",
     "previousTeamId": null,
     "stats": {
       "matches": 16,
@@ -5581,7 +5581,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 100,
-    "set": "WK",
+    "set": "WK2",
     "previousTeamId": null,
     "stats": {
       "matches": 3,
@@ -5616,7 +5616,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 150,
-    "set": "WK",
+    "set": "WK2",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 30,
@@ -5651,7 +5651,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 125,
-    "set": "WK",
+    "set": "WK2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 9,
@@ -5686,7 +5686,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 75,
-    "set": "WK",
+    "set": "WK2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -5720,7 +5720,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 150,
-    "set": "WK",
+    "set": "WK1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 257,
@@ -5755,7 +5755,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 75,
-    "set": "WK",
+    "set": "WK2",
     "previousTeamId": "gt",
     "stats": {
       "matches": 170,
@@ -5790,7 +5790,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 50,
-    "set": "WK",
+    "set": "WK2",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 10,
@@ -5825,7 +5825,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UWK1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 24,
@@ -5860,7 +5860,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UWK1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 7,
@@ -5895,7 +5895,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UWK1",
     "previousTeamId": "dc",
     "stats": {
       "matches": 5,
@@ -5930,7 +5930,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UWK1",
     "previousTeamId": "gt",
     "stats": {
       "matches": 0,
@@ -5964,7 +5964,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UWK1",
     "previousTeamId": "csk",
     "stats": {
       "matches": 0,
@@ -5998,7 +5998,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UWK1",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 13,
@@ -6033,7 +6033,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -6067,7 +6067,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 75,
-    "set": "WK",
+    "set": "WK2",
     "previousTeamId": "rr",
     "stats": {
       "matches": 40,
@@ -6102,7 +6102,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 200,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 52,
@@ -6137,7 +6137,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 200,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 49,
@@ -6172,7 +6172,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 14,
@@ -6207,7 +6207,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm fast",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "gt",
     "stats": {
       "matches": 12,
@@ -6242,7 +6242,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 17,
@@ -6277,7 +6277,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 200,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "csk",
     "stats": {
       "matches": 60,
@@ -6312,7 +6312,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 18,
@@ -6347,7 +6347,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "srh",
     "stats": {
       "matches": 12,
@@ -6382,7 +6382,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 22,
@@ -6417,7 +6417,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 100,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 0,
@@ -6451,7 +6451,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 100,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "mi",
     "stats": {
       "matches": 8,
@@ -6486,7 +6486,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 100,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "mi",
     "stats": {
       "matches": 0,
@@ -6520,7 +6520,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 0,
@@ -6554,7 +6554,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 100,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": null,
     "stats": {
       "matches": 11,
@@ -6589,7 +6589,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 6,
@@ -6624,7 +6624,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 200,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 6,
@@ -6659,7 +6659,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 0,
@@ -6693,7 +6693,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 75,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 104,
@@ -6728,7 +6728,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 100,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "gt",
     "stats": {
       "matches": 148,
@@ -6763,7 +6763,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -6797,7 +6797,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 100,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 14,
@@ -6832,7 +6832,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": "csk",
     "stats": {
       "matches": 24,
@@ -6867,7 +6867,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": "gt",
     "stats": {
       "matches": 34,
@@ -6902,7 +6902,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 75,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 32,
@@ -6937,7 +6937,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 12,
@@ -6972,7 +6972,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 75,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "srh",
     "stats": {
       "matches": 42,
@@ -7007,7 +7007,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 75,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "rr",
     "stats": {
       "matches": 32,
@@ -7042,7 +7042,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm medium-fast",
     "basePriceLakhs": 50,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 19,
@@ -7077,7 +7077,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm medium-fast",
     "basePriceLakhs": 100,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "srh",
     "stats": {
       "matches": 114,
@@ -7112,7 +7112,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 17,
@@ -7147,7 +7147,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 22,
@@ -7182,7 +7182,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 1,
@@ -7217,7 +7217,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 26,
@@ -7252,7 +7252,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": "csk",
     "stats": {
       "matches": 14,
@@ -7287,7 +7287,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "mi",
     "stats": {
       "matches": 6,
@@ -7322,7 +7322,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 200,
-    "set": "SPIN_BOWL",
+    "set": "SP1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 22,
@@ -7357,7 +7357,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 200,
-    "set": "SPIN_BOWL",
+    "set": "SP1",
     "previousTeamId": null,
     "stats": {
       "matches": 3,
@@ -7392,7 +7392,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 150,
-    "set": "SPIN_BOWL",
+    "set": "SP1",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 20,
@@ -7427,7 +7427,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 75,
-    "set": "SPIN_BOWL",
+    "set": "SP2",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 0,
@@ -7461,7 +7461,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 75,
-    "set": "SPIN_BOWL",
+    "set": "SP1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 2,
@@ -7496,7 +7496,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm wrist-spin",
     "basePriceLakhs": 100,
-    "set": "SPIN_BOWL",
+    "set": "SP2",
     "previousTeamId": null,
     "stats": {
       "matches": 5,
@@ -7531,7 +7531,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 75,
-    "set": "SPIN_BOWL",
+    "set": "SP2",
     "previousTeamId": null,
     "stats": {
       "matches": 8,
@@ -7566,7 +7566,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 100,
-    "set": "SPIN_BOWL",
+    "set": "SP1",
     "previousTeamId": null,
     "stats": {
       "matches": 15,
@@ -7601,7 +7601,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 75,
-    "set": "SPIN_BOWL",
+    "set": "SP2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -7635,7 +7635,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 50,
-    "set": "SPIN_BOWL",
+    "set": "SP2",
     "previousTeamId": "mi",
     "stats": {
       "matches": 192,
@@ -7670,7 +7670,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 50,
-    "set": "SPIN_BOWL",
+    "set": "SP2",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 162,
@@ -7705,7 +7705,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 50,
-    "set": "SPIN_BOWL",
+    "set": "SP2",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 90,
@@ -7740,7 +7740,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 100,
-    "set": "SPIN_BOWL",
+    "set": "AL2",
     "previousTeamId": "srh",
     "stats": {
       "matches": 63,
@@ -7781,7 +7781,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "USP1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 52,
@@ -7816,7 +7816,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 50,
-    "set": "SPIN_BOWL",
+    "set": "SP2",
     "previousTeamId": "srh",
     "stats": {
       "matches": 40,
@@ -7851,7 +7851,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 50,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "rr",
     "stats": {
       "matches": 12,
@@ -7886,7 +7886,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "gt",
     "stats": {
       "matches": 1,
@@ -7921,7 +7921,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "USP1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 3,
@@ -7956,7 +7956,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm wrist-spin",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "USP1",
     "previousTeamId": "mi",
     "stats": {
       "matches": 16,
@@ -7991,7 +7991,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": "dc",
     "stats": {
       "matches": 19,
@@ -8032,7 +8032,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 30,
@@ -8067,7 +8067,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -8106,7 +8106,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": null,
     "stats": {
       "matches": 12,
@@ -8145,7 +8145,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -8177,7 +8177,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm wrist-spin",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "USP1",
     "previousTeamId": null,
     "stats": {
       "matches": 5,
@@ -8211,7 +8211,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": null,
     "stats": {
       "matches": 22,
@@ -8246,7 +8246,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -8280,7 +8280,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 0,
@@ -8314,7 +8314,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 0,
@@ -8348,7 +8348,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "csk",
     "stats": {
       "matches": 0,
@@ -8382,7 +8382,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -8416,7 +8416,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -8448,7 +8448,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -8480,7 +8480,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UWK1",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -8514,7 +8514,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -8553,7 +8553,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 0,
@@ -8587,7 +8587,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 0,
@@ -8626,7 +8626,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 5,
@@ -8665,7 +8665,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 19,
@@ -8706,7 +8706,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 0,
@@ -8743,7 +8743,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 3,
@@ -8778,7 +8778,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 50,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 40,
@@ -8819,7 +8819,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 11,
@@ -8854,7 +8854,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": "dc",
     "stats": {
       "matches": 27,
@@ -8895,7 +8895,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "dc",
     "stats": {
       "matches": 4,
@@ -8930,7 +8930,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": "gt",
     "stats": {
       "matches": 6,
@@ -8965,7 +8965,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 50,
-    "set": "SPIN_BOWL",
+    "set": "AL2",
     "previousTeamId": "gt",
     "stats": {
       "matches": 20,
@@ -9006,7 +9006,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "gt",
     "stats": {
       "matches": 27,
@@ -9041,7 +9041,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "rr",
     "stats": {
       "matches": 0,
@@ -9075,7 +9075,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "rr",
     "stats": {
       "matches": 0,
@@ -9109,7 +9109,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 20,
@@ -9144,7 +9144,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 10,
@@ -9179,7 +9179,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 50,
-    "set": "AR",
+    "set": "AL2",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 39,
@@ -9220,7 +9220,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "pbks",
     "stats": {
       "matches": 0,
@@ -9254,7 +9254,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "srh",
     "stats": {
       "matches": 7,
@@ -9293,7 +9293,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UWK1",
     "previousTeamId": "srh",
     "stats": {
       "matches": 0,
@@ -9327,7 +9327,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "srh",
     "stats": {
       "matches": 9,
@@ -9362,7 +9362,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": "srh",
     "stats": {
       "matches": 0,
@@ -9396,7 +9396,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 0,
@@ -9430,7 +9430,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 26,
@@ -9471,7 +9471,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UAL1",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 8,
@@ -9512,7 +9512,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 0,
@@ -9546,7 +9546,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "rcb",
     "stats": {
       "matches": 0,
@@ -9580,7 +9580,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -9614,7 +9614,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "mi",
     "stats": {
       "matches": 0,
@@ -9648,7 +9648,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm fast",
     "basePriceLakhs": 75,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "mi",
     "stats": {
       "matches": 4,
@@ -9683,7 +9683,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 75,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "mi",
     "stats": {
       "matches": 2,
@@ -9718,7 +9718,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 75,
-    "set": "SPIN_BOWL",
+    "set": "SP2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -9752,7 +9752,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 75,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "kkr",
     "stats": {
       "matches": 20,
@@ -9787,7 +9787,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 100,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "dc",
     "stats": {
       "matches": 28,
@@ -9822,7 +9822,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "dc",
     "stats": {
       "matches": 4,
@@ -9857,7 +9857,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 150,
-    "set": "FAST_BOWL",
+    "set": "AL2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -9896,7 +9896,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 75,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -9930,7 +9930,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 75,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -9964,7 +9964,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 75,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -9998,7 +9998,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast",
     "basePriceLakhs": 100,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -10032,7 +10032,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "BA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -10066,7 +10066,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 75,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 0,
@@ -10100,7 +10100,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm fast",
     "basePriceLakhs": 100,
-    "set": "FAST_BOWL",
+    "set": "FA1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 19,
@@ -10135,7 +10135,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Left-arm fast-medium",
     "basePriceLakhs": 75,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": "rr",
     "stats": {
       "matches": 8,
@@ -10170,7 +10170,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -10204,7 +10204,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -10238,7 +10238,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "N/A",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 3,
@@ -10273,7 +10273,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 22,
@@ -10308,7 +10308,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "USP1",
     "previousTeamId": null,
     "stats": {
       "matches": 44,
@@ -10343,7 +10343,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Left-arm wrist-spin",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -10375,7 +10375,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 50,
-    "set": "FAST_BOWL",
+    "set": "FA2",
     "previousTeamId": null,
     "stats": {
       "matches": 55,
@@ -10410,7 +10410,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 25,
@@ -10445,7 +10445,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "rr",
     "stats": {
       "matches": 7,
@@ -10480,7 +10480,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -10512,7 +10512,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -10551,7 +10551,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": null,
     "stats": {
       "matches": 0,
@@ -10590,7 +10590,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm medium-fast",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 0,
@@ -10629,7 +10629,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 4,
@@ -10664,7 +10664,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA2",
     "previousTeamId": "dc",
     "stats": {
       "matches": 0,
@@ -10698,7 +10698,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm fast-medium",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UFA1",
     "previousTeamId": null,
     "stats": {
       "matches": 25,
@@ -10734,7 +10734,7 @@
     "battingStyle": "Left-hand bat",
     "bowlingStyle": "Slow left-arm orthodox",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "rr",
     "stats": {
       "matches": 16,
@@ -10769,7 +10769,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm offbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "UBA1",
     "previousTeamId": "csk",
     "stats": {
       "matches": 18,
@@ -10804,7 +10804,7 @@
     "battingStyle": "Right-hand bat",
     "bowlingStyle": "Right-arm legbreak",
     "basePriceLakhs": 30,
-    "set": "UNCAPPED",
+    "set": "USP1",
     "previousTeamId": "lsg",
     "stats": {
       "matches": 20,

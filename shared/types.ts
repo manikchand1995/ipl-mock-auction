@@ -11,13 +11,24 @@ export type PlayingRole =
   | 'SPIN_BOWL';
 
 export type AuctionSet =
-  | 'MARQUEE'
-  | 'BAT'
-  | 'AR'
-  | 'WK'
-  | 'FAST_BOWL'
-  | 'SPIN_BOWL'
-  | 'UNCAPPED';
+  | 'M1'
+  | 'M2'
+  | 'BA1'
+  | 'AL1'
+  | 'WK1'
+  | 'FA1'
+  | 'SP1'
+  | 'UBA1'
+  | 'UAL1'
+  | 'UWK1'
+  | 'UFA1'
+  | 'USP1'
+  | 'BA2'
+  | 'AL2'
+  | 'WK2'
+  | 'FA2'
+  | 'SP2'
+  | 'UBA2';
 
 export type AIPersonality =
   | 'aggressive'

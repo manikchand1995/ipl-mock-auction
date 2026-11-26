@@ -97,18 +97,18 @@ export function computeAIMaxValuationLakhs(
     homeFitMultiplier = 1.12;
   }
 
-  // Purse pacing: scale gently by remaining purse ratio
+  // Purse pacing: scale by remaining purse per slot so cash-strapped teams drop out early
   const slotsLeft = Math.max(1, config.minSquadSize - team.squad.length);
   const avgPursePerSlot = team.remainingPurseLakhs / slotsLeft;
-  const purseFactor = Math.min(1.35, Math.max(0.55, avgPursePerSlot / 650));
+  const purseFactor = Math.min(1.4, Math.max(0.52, avgPursePerSlot / 650));
 
-  // Personality multiplier (value_hunter stops underbidding if it has surplus purse)
+  // Distinct personality multipliers so some AI bots build powerhouses and others gamble/underbid
   let personalityMultiplier = 1.0;
-  if (team.aiPersonality === 'aggressive') personalityMultiplier = 1.18;
+  if (team.aiPersonality === 'aggressive') personalityMultiplier = 1.24;
   else if (team.aiPersonality === 'value_hunter') {
-    personalityMultiplier = avgPursePerSlot > 750 ? 1.02 : 0.88;
+    personalityMultiplier = avgPursePerSlot > 850 ? 1.04 : 0.82;
   } else if (team.aiPersonality === 'star_chaser') {
-    personalityMultiplier = rating >= 88 ? 1.28 : 0.85;
+    personalityMultiplier = rating >= 88 ? 1.32 : 0.8;
   }
 
   // Difficulty multiplier

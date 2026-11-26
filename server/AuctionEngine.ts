@@ -378,23 +378,25 @@ export class AuctionEngine {
   }
 
   private ensureShuffledOpeningPool(): void {
-    const marquee = this.playerQueue.filter((p) => p.set === 'MARQUEE');
-    if (marquee.length >= 8) return;
+    const m1 = this.playerQueue.filter((p) => p.set === 'M1');
+    if (m1.length >= 6) return;
 
-    // When AI/human retentions remove most MARQUEE players, promote top unretained
-    // capped stars into the opening batch and shuffle so the same player doesn't always open.
-    const needed = Math.max(0, 12 - marquee.length);
-    const cappedPool = this.playerQueue
-      .filter((p) => p.set !== 'MARQUEE' && p.set !== 'UNCAPPED')
-      .sort((a, b) => b.ratings.overall - a.ratings.overall)
-      .slice(0, needed);
+    // When AI/human retentions leave very few players in M1, merge M2 (and top capped
+    // stars if still < 8) into a shuffled opening batch so the same player doesn't always open.
+    const m2 = this.playerQueue.filter((p) => p.set === 'M2');
+    const combinedMarquee = [...m1, ...m2];
+    const needed = Math.max(0, 10 - combinedMarquee.length);
+    const cappedPool =
+      needed > 0
+        ? this.playerQueue
+            .filter((p) => p.set !== 'M1' && p.set !== 'M2' && !p.isUncapped)
+            .sort((a, b) => b.ratings.overall - a.ratings.overall)
+            .slice(0, needed)
+        : [];
 
-    const promotedIds = new Set(cappedPool.map((p) => p.id));
-    const marqueeIds = new Set(marquee.map((p) => p.id));
-    const openingBatch = shuffleArray([...marquee, ...cappedPool]);
-    const rest = this.playerQueue.filter(
-      (p) => !marqueeIds.has(p.id) && !promotedIds.has(p.id)
-    );
+    const openingBatch = shuffleArray([...combinedMarquee, ...cappedPool]);
+    const openingIds = new Set(openingBatch.map((p) => p.id));
+    const rest = this.playerQueue.filter((p) => !openingIds.has(p.id));
     this.playerQueue = [...openingBatch, ...rest];
   }
 
