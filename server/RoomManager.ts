@@ -29,7 +29,7 @@ export class RoomManager {
     this.callbacks = callbacks;
 
     // Periodic cleanup of idle/completed rooms (> 2 hours idle)
-    setInterval(() => {
+    const cleanupTimer = setInterval(() => {
       const cutoff = Date.now() - 2 * 60 * 60 * 1000;
       for (const [code, engine] of this.rooms.entries()) {
         if (engine.lastActivityAt < cutoff) {
@@ -38,6 +38,7 @@ export class RoomManager {
         }
       }
     }, 10 * 60 * 1000);
+    cleanupTimer.unref();
   }
 
   public createRoom(

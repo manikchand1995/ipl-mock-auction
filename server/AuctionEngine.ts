@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import playersData from '../shared/data/players.json';
 import {
   AI_PERSONALITIES,
+  AUCTION_SET_LABELS,
   AUCTION_SET_ORDER,
   IPL_FRANCHISES,
 } from '../shared/constants';
@@ -781,6 +782,131 @@ export class AuctionEngine {
 
     this.timerEndsAt = Date.now();
     this.handleBiddingTimerExpired();
+  }
+
+  public skipMultipleLots(
+    mode: 'COUNT' | 'SET',
+    count: number,
+    requesterTeamId?: string
+  ): void {
+    if (this.config.mode !== 'SINGLE_PLAYER') return;
+    if (this.phase !== 'BIDDING' || !this.currentLot) return;
+    this.clearTimers();
+
+    const simulateSinglePlayer = (
+      player: Player,
+      startBidLakhs: number,
+      startHighestTeamId: string | null
+    ) => {
+      const minNext = getNextBidAmountLakhs(
+        startBidLakhs,
+        startHighestTeamId,
+        player.basePriceLakhs
+      );
+      const aiCandidates = Object.values(this.teams)
+        .filter((team) => {
+          if (team.ownerType !== 'AI') return false;
+          if (requesterTeamId && team.franchise.id === requesterTeamId) return false;
+          return validateBid(team, player, minNext, startHighestTeamId, this.config).valid;
+        })
+        .map((team) => ({
+          team,
+          maxVal: computeAIMaxValuationLakhs(team, player, this.config),
+        }))
+        .filter((c) => c.maxVal >= minNext)
+        .sort((a, b) => b.maxVal - a.maxVal);
+
+      let winnerTeamId = startHighestTeamId;
+      let finalPrice = startBidLakhs;
+
+      if (aiCandidates.length > 0) {
+        const top = aiCandidates[0];
+        let bidPrice = minNext;
+        if (aiCandidates.length > 1) {
+          const secondMax = aiCandidates[1].maxVal;
+          const step = getBidIncrementLakhs(secondMax);
+          bidPrice = Math.min(top.maxVal, Math.max(minNext, secondMax + step));
+        }
+        if (startHighestTeamId && bidPrice <= startBidLakhs) {
+          bidPrice = Math.min(
+            top.maxVal,
+            startBidLakhs + getBidIncrementLakhs(startBidLakhs)
+          );
+        }
+        bidPrice = Math.min(
+          getMaxAllowedBidLakhs(top.team, this.config),
+          Math.max(minNext, Math.round(bidPrice / 5) * 5)
+        );
+        if (validateBid(top.team, player, bidPrice, startHighestTeamId, this.config).valid) {
+          winnerTeamId = top.team.franchise.id;
+          finalPrice = bidPrice;
+        }
+      }
+
+      if (!winnerTeamId) {
+        this.unsoldPool.push(player);
+        return;
+      }
+
+      let via: 'AUCTION' | 'RTM' = 'AUCTION';
+      const prevTeam = player.previousTeamId ? this.teams[player.previousTeamId] : null;
+      if (
+        this.config.enableRetentionAndRTM &&
+        prevTeam &&
+        prevTeam.ownerType === 'AI' &&
+        prevTeam.franchise.id !== winnerTeamId &&
+        prevTeam.rtmCardsRemaining > 0 &&
+        validateBid(prevTeam, player, finalPrice, null, this.config).valid &&
+        shouldAIUseRTM(prevTeam, player, finalPrice, this.config)
+      ) {
+        prevTeam.rtmCardsRemaining -= 1;
+        winnerTeamId = prevTeam.franchise.id;
+        via = 'RTM';
+      }
+
+      const winner = this.teams[winnerTeamId];
+      winner.remainingPurseLakhs -= finalPrice;
+      winner.squad.push({
+        player,
+        priceLakhs: finalPrice,
+        acquiredVia: via,
+      });
+      this.soldCount++;
+    };
+
+    const targetSet = this.currentLot.player.set;
+    let simulatedCount = 0;
+
+    // Simulate current lot first
+    simulateSinglePlayer(
+      this.currentLot.player,
+      this.currentLot.currentBidLakhs,
+      this.currentLot.highestBidderTeamId
+    );
+    simulatedCount++;
+
+    if (mode === 'COUNT') {
+      while (simulatedCount < count && this.playerQueue.length > 0) {
+        const nextP = this.playerQueue.shift()!;
+        simulateSinglePlayer(nextP, nextP.basePriceLakhs, null);
+        simulatedCount++;
+      }
+      this.addSystemMessage(
+        `Skipped ${simulatedCount} player${simulatedCount > 1 ? 's' : ''} (simulated across AI teams).`
+      );
+    } else {
+      while (this.playerQueue.length > 0 && this.playerQueue[0].set === targetSet) {
+        const nextP = this.playerQueue.shift()!;
+        simulateSinglePlayer(nextP, nextP.basePriceLakhs, null);
+        simulatedCount++;
+      }
+      this.addSystemMessage(
+        `Skipped rest of ${AUCTION_SET_LABELS[targetSet] ?? targetSet} (${simulatedCount} players simulated across AI teams).`
+      );
+    }
+
+    this.currentLot = null;
+    this.advanceToNextLot();
   }
 
   public triggerAcceleratedRound(): void {

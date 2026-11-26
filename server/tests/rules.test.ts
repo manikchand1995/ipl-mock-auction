@@ -439,3 +439,42 @@ test('gradeTeamSquad assigns distinct Captain and Vice-Captain and setLeadership
   assert.equal(engine.teams['csk'].wicketkeeperId, customWk);
   engine.destroy();
 });
+
+test('skipMultipleLots works in SINGLE_PLAYER mode and is ignored in MULTIPLAYER mode', () => {
+  const sp = new AuctionEngine(
+    'SKIP01',
+    'host-tok',
+    { ...DEFAULT_ROOM_CONFIG, mode: 'SINGLE_PLAYER', enableRetentionAndRTM: false },
+    { onStateChange: () => {}, onReaction: () => {} }
+  );
+  const mp = new AuctionEngine(
+    'SKIP02',
+    'host-tok',
+    { ...DEFAULT_ROOM_CONFIG, mode: 'MULTIPLAYER', enableRetentionAndRTM: false },
+    { onStateChange: () => {}, onReaction: () => {} }
+  );
+  try {
+    sp.assignHumanToTeam('csk', 'host-tok', 'Host');
+    sp.startAuction();
+    const initialQueueLen = sp.getPublicState().remainingQueueCount;
+    sp.skipMultipleLots('COUNT', 5, 'csk');
+    const afterSkip5 = sp.getPublicState();
+    assert.equal(afterSkip5.phase, 'BIDDING');
+    assert.equal(afterSkip5.remainingQueueCount, initialQueueLen - 5);
+    assert.equal(afterSkip5.teams['csk'].squad.length, 0);
+
+    const setBefore = afterSkip5.currentLot?.player.set;
+    sp.skipMultipleLots('SET', 0, 'csk');
+    const afterSkipSet = sp.getPublicState();
+    assert.notEqual(afterSkipSet.currentLot?.player.set, setBefore);
+
+    mp.assignHumanToTeam('csk', 'host-tok', 'Host');
+    mp.startAuction();
+    const mpLen = mp.getPublicState().remainingQueueCount;
+    mp.skipMultipleLots('COUNT', 5, 'csk');
+    assert.equal(mp.getPublicState().remainingQueueCount, mpLen);
+  } finally {
+    sp.destroy();
+    mp.destroy();
+  }
+});

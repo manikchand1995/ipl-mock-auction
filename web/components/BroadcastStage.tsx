@@ -33,6 +33,9 @@ interface BroadcastStageProps {
   onRTMDecision: (useRTM: boolean) => void;
   onTogglePause: () => void;
   onSkipLot: () => void;
+  onSkip5?: () => void;
+  onSkip10?: () => void;
+  onSkipSet?: () => void;
   onTriggerAccelerated: () => void;
   onSimulateAuction: () => void;
   onEndAuction: () => void;
@@ -48,6 +51,9 @@ export default function BroadcastStage({
   onRTMDecision,
   onTogglePause,
   onSkipLot,
+  onSkip5,
+  onSkip10,
+  onSkipSet,
   onTriggerAccelerated,
   onSimulateAuction,
   onEndAuction,
@@ -203,6 +209,34 @@ export default function BroadcastStage({
               >
                 <SkipForward className="h-3.5 w-3.5" /> Skip
               </button>
+              {state.config.mode === 'SINGLE_PLAYER' && (
+                <>
+                  <button
+                    onClick={onSkip5}
+                    disabled={state.phase !== 'BIDDING'}
+                    className="rounded-lg border border-slate-700 bg-slate-800 px-2 py-1.5 font-semibold text-slate-200 hover:bg-slate-700 disabled:opacity-40"
+                    title="Simulate next 5 players across AI teams"
+                  >
+                    Skip 5
+                  </button>
+                  <button
+                    onClick={onSkip10}
+                    disabled={state.phase !== 'BIDDING'}
+                    className="rounded-lg border border-slate-700 bg-slate-800 px-2 py-1.5 font-semibold text-slate-200 hover:bg-slate-700 disabled:opacity-40"
+                    title="Simulate next 10 players across AI teams"
+                  >
+                    Skip 10
+                  </button>
+                  <button
+                    onClick={onSkipSet}
+                    disabled={state.phase !== 'BIDDING'}
+                    className="rounded-lg border border-slate-700 bg-slate-800 px-2 py-1.5 font-semibold text-amber-300 hover:bg-slate-700 disabled:opacity-40"
+                    title="Simulate remaining players in the current set across AI teams"
+                  >
+                    Skip Set
+                  </button>
+                </>
+              )}
               {state.currentSet !== 'ACCELERATED' && (
                 <button
                   onClick={onTriggerAccelerated}

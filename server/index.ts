@@ -237,19 +237,38 @@ io.on('connection', (socket) => {
     }
   );
 
-  socket.on('hostControl', (payload: { action: 'PAUSE' | 'SKIP' | 'ACCELERATE' | 'SIMULATE' | 'END' }) => {
-    const session = roomManager.getSessionBySocket(socket.id);
-    if (!session) return;
-    const engine = roomManager.getRoom(session.roomCode);
-    if (!engine || engine.hostToken !== session.playerToken) return;
+  socket.on(
+    'hostControl',
+    (payload: {
+      action:
+        | 'PAUSE'
+        | 'SKIP'
+        | 'SKIP_5'
+        | 'SKIP_10'
+        | 'SKIP_SET'
+        | 'ACCELERATE'
+        | 'SIMULATE'
+        | 'END';
+    }) => {
+      const session = roomManager.getSessionBySocket(socket.id);
+      if (!session) return;
+      const engine = roomManager.getRoom(session.roomCode);
+      if (!engine || engine.hostToken !== session.playerToken) return;
 
-    const team = engine.getTeamByToken(session.playerToken);
-    if (payload.action === 'PAUSE') engine.togglePause();
-    else if (payload.action === 'SKIP') engine.skipCurrentLot(team?.franchise.id);
-    else if (payload.action === 'ACCELERATE') engine.triggerAcceleratedRound();
-    else if (payload.action === 'SIMULATE') engine.simulateRemainingAuction();
-    else if (payload.action === 'END') engine.completeAuction();
-  });
+      const team = engine.getTeamByToken(session.playerToken);
+      if (payload.action === 'PAUSE') engine.togglePause();
+      else if (payload.action === 'SKIP') engine.skipCurrentLot(team?.franchise.id);
+      else if (payload.action === 'SKIP_5')
+        engine.skipMultipleLots('COUNT', 5, team?.franchise.id);
+      else if (payload.action === 'SKIP_10')
+        engine.skipMultipleLots('COUNT', 10, team?.franchise.id);
+      else if (payload.action === 'SKIP_SET')
+        engine.skipMultipleLots('SET', 0, team?.franchise.id);
+      else if (payload.action === 'ACCELERATE') engine.triggerAcceleratedRound();
+      else if (payload.action === 'SIMULATE') engine.simulateRemainingAuction();
+      else if (payload.action === 'END') engine.completeAuction();
+    }
+  );
 
   socket.on('simulateSeason', () => {
     const session = roomManager.getSessionBySocket(socket.id);

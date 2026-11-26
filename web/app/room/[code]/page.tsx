@@ -320,6 +320,9 @@ export default function RoomPage() {
                 socket.emit('hostControl', { action: 'PAUSE' })
               }
               onSkipLot={() => socket.emit('hostControl', { action: 'SKIP' })}
+              onSkip5={() => socket.emit('hostControl', { action: 'SKIP_5' })}
+              onSkip10={() => socket.emit('hostControl', { action: 'SKIP_10' })}
+              onSkipSet={() => socket.emit('hostControl', { action: 'SKIP_SET' })}
               onTriggerAccelerated={() =>
                 socket.emit('hostControl', { action: 'ACCELERATE' })
               }
