@@ -274,30 +274,51 @@ export class AuctionEngine {
 
   private autoSelectAIRetentionForTeam(team: TeamState): void {
     const retainedIds = new Set<string>();
-    // AI retains only players worth their retention slab (90+ for 18Cr, 88+ for 14Cr, 86+ for 11Cr)
     const eligible = (playersData as Player[])
-      .filter((p) => p.previousTeamId === team.franchise.id && p.ratings.overall >= 86)
+      .filter(
+        (p) =>
+          p.previousTeamId === team.franchise.id &&
+          (p.isUncapped ? p.ratings.overall >= 76 : p.ratings.overall >= 84)
+      )
       .sort((a, b) => b.ratings.overall - a.ratings.overall);
 
+    // Varied AI retention targets: 1, 2, 3 (most common), 4, or 5
+    const r = Math.random();
+    let targetCount = r < 0.12 ? 1 : r < 0.34 ? 2 : r < 0.72 ? 3 : r < 0.9 ? 4 : 5;
+    if (team.aiPersonality === 'value_hunter') targetCount = Math.min(targetCount, 2);
+    else if (team.aiPersonality === 'aggressive' && targetCount < 3) targetCount = 3;
+
+    const limit = Math.min(targetCount, this.config.maxRetentionsAndRTM);
     const chosen: Player[] = [];
     let overseas = 0;
-    const limit = Math.min(3, this.config.maxRetentionsAndRTM);
-    const minThresholds = [90, 88, 86];
+    let cappedCount = 0;
+    let uncappedCount = 0;
+    const minCappedThresholds = [89, 87, 85, 85, 84];
+
     for (const p of eligible) {
       if (chosen.length >= limit) break;
       if (p.isOverseas && overseas >= 2) continue;
-      const threshold = minThresholds[chosen.length] ?? 86;
-      if (!p.isUncapped && p.ratings.overall < threshold) continue;
+      if (p.isUncapped) {
+        if (uncappedCount >= 2) continue;
+      } else {
+        if (cappedCount >= 5) continue;
+        const threshold = minCappedThresholds[cappedCount] ?? 84;
+        if (p.ratings.overall < threshold) continue;
+      }
       chosen.push(p);
       if (p.isOverseas) overseas++;
+      if (p.isUncapped) uncappedCount++;
+      else cappedCount++;
     }
 
-    if (chosen.length > 0) {
+    while (chosen.length > 0) {
       const cost = calculateRetentionCostLakhs(chosen);
-      if (cost <= team.remainingPurseLakhs - 4000) {
+      if (cost <= team.remainingPurseLakhs - 3500) {
         this.applyRetentionsToTeam(team, chosen);
         chosen.forEach((p) => retainedIds.add(p.id));
+        break;
       }
+      chosen.pop();
     }
     this.retentionReadyTeams.add(team.franchise.id);
 

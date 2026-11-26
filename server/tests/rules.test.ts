@@ -546,3 +546,31 @@ test('skipping all sets after 3 retentions auto-fills human squad up to minSquad
     engine.destroy();
   }
 });
+
+test('AI teams retain varied player counts (1-5) respecting capped/uncapped limits', () => {
+  const counts = new Set<number>();
+  for (let i = 0; i < 4; i++) {
+    const engine = new AuctionEngine(
+      `AIRET${i}`,
+      'host-tok',
+      { ...DEFAULT_ROOM_CONFIG, enableRetentionAndRTM: true },
+      { onStateChange: () => {}, onReaction: () => {} }
+    );
+    try {
+      engine.assignHumanToTeam('csk', 'host-tok', 'Host');
+      engine.startAuction();
+      for (const t of Object.values(engine.teams)) {
+        if (t.ownerType === 'AI') {
+          counts.add(t.squad.length);
+          const capped = t.squad.filter((s) => !s.player.isUncapped).length;
+          const uncapped = t.squad.filter((s) => s.player.isUncapped).length;
+          assert.ok(capped <= 5, `AI ${t.franchise.id} exceeded 5 capped retentions`);
+          assert.ok(uncapped <= 2, `AI ${t.franchise.id} exceeded 2 uncapped retentions`);
+        }
+      }
+    } finally {
+      engine.destroy();
+    }
+  }
+  assert.ok(counts.size >= 3, `Expected varied AI retention counts, got: ${[...counts].join(', ')}`);
+});

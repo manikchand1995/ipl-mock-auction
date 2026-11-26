@@ -3,7 +3,7 @@
 import { Search, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import playersData from '@shared/data/players.json';
-import { AUCTION_SET_LABELS } from '@shared/constants';
+import { AUCTION_SET_LABELS, AUCTION_SET_ORDER } from '@shared/constants';
 import { formatINR } from '@shared/rules';
 import { AuctionSet, Player, PlayerRole } from '@shared/types';
 
@@ -130,13 +130,11 @@ export default function AuctionPoolModal({
                 className="rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1.5 text-slate-200"
               >
                 <option value="ALL">All Sets</option>
-                <option value="MARQUEE">Marquee</option>
-                <option value="BAT">Capped Batters</option>
-                <option value="AR">Capped All-Rounders</option>
-                <option value="WK">Capped Wicketkeepers</option>
-                <option value="FAST_BOWL">Fast Bowlers</option>
-                <option value="SPIN_BOWL">Spinners</option>
-                <option value="UNCAPPED">Uncapped</option>
+                {AUCTION_SET_ORDER.map((s) => (
+                  <option key={s} value={s}>
+                    {AUCTION_SET_LABELS[s]}
+                  </option>
+                ))}
               </select>
             )}
           </div>
